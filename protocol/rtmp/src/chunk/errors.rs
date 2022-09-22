@@ -12,6 +12,8 @@ pub enum UnpackErrorValue {
     UnknowReadState,
     #[fail(display = "empty chunks")]
     EmptyChunks,
+    #[fail(display = "malformed input")]
+    MalformedInput,
     //IO(io::Error),
 }
 

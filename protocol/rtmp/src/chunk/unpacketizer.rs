@@ -418,19 +418,34 @@ impl ChunkUnpacketizer {
             }
             1 => {
                 if self.current_message_header().is_extended_timestamp {
-                    self.current_message_header().timestamp += extended_timestamp - 0xFFFFFF;
+                    self.current_message_header().timestamp = self
+                        .current_message_header()
+                        .timestamp
+                        .checked_add(extended_timestamp)
+                        .and_then(|x| x.checked_sub(0xFFFFFF))
+                        .ok_or(UnpackErrorValue::MalformedInput)?;
                 } else {
-                    self.current_message_header().timestamp +=
-                        self.current_message_header().timestamp_delta;
+                    self.current_message_header().timestamp = self
+                        .current_message_header()
+                        .timestamp
+                        .checked_add(self.current_message_header().timestamp_delta)
+                        .ok_or(UnpackErrorValue::MalformedInput)?;
                 }
             }
             2 => {
                 if self.current_message_header().is_extended_timestamp {
-                    self.current_message_header().timestamp =
-                        self.current_message_header().timestamp - 0xFFFFFF + extended_timestamp;
+                    self.current_message_header().timestamp = self
+                        .current_message_header()
+                        .timestamp
+                        .checked_sub(0xFFFFFF)
+                        .and_then(|x| x.checked_add(extended_timestamp))
+                        .ok_or(UnpackErrorValue::MalformedInput)?
                 } else {
-                    self.current_message_header().timestamp +=
-                        self.current_message_header().timestamp_delta;
+                    self.current_message_header().timestamp = self
+                        .current_message_header()
+                        .timestamp
+                        .checked_add(self.current_message_header().timestamp_delta)
+                        .ok_or(UnpackErrorValue::MalformedInput)?;
                 }
             }
             //todo: 3 should also be processed
@@ -444,7 +459,9 @@ impl ChunkUnpacketizer {
 
     pub fn read_message_payload(&mut self) -> Result<UnpackResult, UnpackError> {
         let whole_msg_length = self.current_message_header().msg_length as usize;
-        let remaining_bytes = whole_msg_length - self.current_chunk_info.payload.len();
+        let remaining_bytes = whole_msg_length
+            .checked_sub(self.current_chunk_info.payload.len())
+            .ok_or(UnpackErrorValue::MalformedInput)?;
 
         log::trace!(
             "read_message_payload whole msg length: {} and remaining bytes: {}",
