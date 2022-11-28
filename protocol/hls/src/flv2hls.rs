@@ -76,8 +76,8 @@ impl Flv2HlsRemuxer {
             duration,
             6,
             m3u8_name,
-            app_name.clone(),
-            stream_name.clone(),
+            app_name,
+            stream_name,
         );
 
         m3u8_handler.setup_m3u8_listener(m3u8_consumer);
@@ -108,7 +108,7 @@ impl Flv2HlsRemuxer {
             p_video_pid,
             p_audio_pid,
 
-            m3u8_handler: m3u8_handler,
+            m3u8_handler,
         }
     }
 

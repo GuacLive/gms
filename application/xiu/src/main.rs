@@ -77,7 +77,7 @@ pub struct Service {
 
 impl Service {
     pub fn new(cfg: Config) -> Self {
-        Service { cfg: cfg }
+        Service { cfg }
     }
 
     async fn run(&mut self) -> Result<()> {
@@ -157,7 +157,7 @@ impl Service {
             let listen_port = rtmp_cfg_value.port;
             let address = format!("0.0.0.0:{port}", port = listen_port);
 
-            let mut rtmp_server = RtmpServer::new(address, producer.clone());
+            let mut rtmp_server = RtmpServer::new(address, producer);
             tokio::spawn(async move {
                 if let Err(err) = rtmp_server.run().await {
                     //print!("rtmp server  error {}\n", err);
@@ -177,7 +177,7 @@ impl Service {
                 return Ok(());
             }
             let port = httpflv_cfg_value.port;
-            let event_producer = channel.get_session_event_producer().clone();
+            let event_producer = channel.get_session_event_producer();
 
             tokio::spawn(async move {
                 if let Err(err) = httpflv_server::run(event_producer, port).await {
@@ -201,7 +201,7 @@ impl Service {
             let hls_manager = HlsEventManager::new();
             let hls_dispatch = hls_manager.setup_dispatch_channel();
 
-            let event_producer = channel.get_session_event_producer().clone();
+            let event_producer = channel.get_session_event_producer();
             let client_event_consumer = channel.get_client_event_consumer();
             let mut rtmp_event_processor = RtmpEventProcessor::new(
                 client_event_consumer,
