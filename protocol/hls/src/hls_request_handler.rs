@@ -99,7 +99,12 @@ impl Service<Request<Body>> for HlsHandler {
 
                             let q = M3u8Event::RequestPlaylist { channel: resp_tx };
 
-                            mp.send(q).await;
+                            match mp.send(q).await {
+                                Ok(_) => {}
+                                Err(_) => {
+                                    return Ok(not_found());
+                                }
+                            }
 
                             let M3u8PlaylistResponse {
                                 sequence_no: _seq,

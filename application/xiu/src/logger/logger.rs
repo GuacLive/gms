@@ -100,10 +100,10 @@ mod tests {
         let timestamp = "1524820690".parse::<i64>().unwrap();
 
         // Create a NaiveDateTime from the timestamp
-        let naive = NaiveDateTime::from_timestamp(timestamp, 0);
+        let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0);
 
         // Create a normal DateTime from the NaiveDateTime
-        let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+        let datetime: DateTime<Utc> = DateTime::from_utc(naive.unwrap(), Utc);
 
         // Format the datetime how you want
         let newdate = datetime.format("%Y-%m-%d %H:%M:%S");

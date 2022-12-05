@@ -17,18 +17,17 @@ rand = "0.3"
 failure = "0.1.1"
 hmac = "0.11.0"
 sha2 = "0.9"
-uuid = { version = "0.6.5", features = ["v4"] }
+uuid = { version = "^0.7", features = ["v4"] }
 
-bytesio = "0.1.27"#{path = "../../library/bytesio/"}
-xflv = "0.0.3"#{path = "../../library/container/flv/"}
+bytesio = {path = "../../library/bytesio/"}
+xflv = {path = "../../library/container/flv/"}
 
-#bytesio = {path = "../../library/bytesio/"}
 
-tokio-util = { version = "0.6.5", features = ["codec"] }
+tokio-util = { version = "^0.7", features = ["codec"] }
 log = "0.4"
-chrono = "0.4"
+chrono = "^0.4"
 
 [dependencies.tokio]
-version = "1.4.0"
+version = "^1"
 default-features = false
 features = ["full"]

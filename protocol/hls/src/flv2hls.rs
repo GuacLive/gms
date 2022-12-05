@@ -71,14 +71,7 @@ impl Flv2HlsRemuxer {
 
         let m3u8_name = format!("{}.m3u8", stream_name);
 
-        let m3u8_handler = M3u8::new(
-            hls_event_tx,
-            duration,
-            6,
-            m3u8_name,
-            app_name,
-            stream_name,
-        );
+        let m3u8_handler = M3u8::new(hls_event_tx, duration, 6, m3u8_name, app_name, stream_name);
 
         m3u8_handler.setup_m3u8_listener(m3u8_consumer);
 

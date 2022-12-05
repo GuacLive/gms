@@ -1,4 +1,5 @@
 use super::errors::HlsError;
+use super::errors::HlsErrorValue;
 use super::flv_data_receiver::FlvDataReceiver;
 use super::hls_event_manager::{DispatchEvent, DispatchEventProducer};
 
@@ -41,7 +42,14 @@ impl RtmpEventProcessor {
                         channel: resp_tx,
                     };
 
-                    self.hls_manager_dispatcher.send(m).await;
+                    match self.hls_manager_dispatcher.send(m).await {
+                        Ok(_) => {}
+                        Err(_) => {
+                            return Err(HlsError {
+                                value: HlsErrorValue::Error,
+                            })
+                        }
+                    }
 
                     let (stream_channel_producer, m3u8_consumer) = resp_rx.await.unwrap();
 

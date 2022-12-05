@@ -1,12 +1,12 @@
 use {
     failure::Fail,
-    xflv::errors::FlvDemuxerError,
-    xmpegts::errors::MpegTsError,
     rtmp::{
         amf0::errors::Amf0WriteError, cache::errors::MetadataError, session::errors::SessionError,
     },
     std::fmt,
     tokio::sync::broadcast::error::RecvError,
+    xflv::errors::FlvDemuxerError,
+    xmpegts::errors::MpegTsError,
 };
 
 #[derive(Debug)]
