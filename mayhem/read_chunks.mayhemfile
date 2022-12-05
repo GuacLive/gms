@@ -1,7 +1,0 @@
-project: xiu
-target: read-chunks
-
-cmds:
-  - cmd: /read_chunks
-  - cmd: /read_chunks_no_inst @@
-    libfuzzer: false
