@@ -1,4 +1,4 @@
-use std::sync::Arc;
+
 use {
     //https://rustcc.cn/article?id=6dcbf032-0483-4980-8bfe-c64a7dfb33c7
     anyhow::Result,
@@ -206,7 +206,7 @@ impl Service {
             let mut rtmp_event_processor = RtmpEventProcessor::new(
                 client_event_consumer,
                 event_producer,
-                hls_dispatch.clone(),
+                hls_dispatch,
             );
 
             tokio::spawn(async move {
