@@ -535,9 +535,7 @@ impl ServerSession {
             )
             .await?;
 
-        event_messages
-            .write_stream_is_record(*stream_id)
-            .await?;
+        event_messages.write_stream_is_record(*stream_id).await?;
         log::info!(
             "[ S->C ] [stream is record]  app_name: {}, stream_name: {}",
             self.app_name,
