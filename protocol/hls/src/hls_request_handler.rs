@@ -25,7 +25,7 @@ impl Service<Request<Body>> for HlsHandler {
     type Error = hyper::Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
-    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+    fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         Poll::Ready(Ok(()))
     }
 
@@ -65,7 +65,7 @@ impl Service<Request<Body>> for HlsHandler {
 
             if m3u8_index > 0 {
                 let (left, _) = path.split_at(m3u8_index);
-                let rv: Vec<_> = left.split("/").collect();
+                let rv: Vec<_> = left.split('/').collect();
 
                 let app_name = String::from(rv[1]);
                 let stream_name = String::from(rv[2]);
@@ -91,7 +91,7 @@ impl Service<Request<Body>> for HlsHandler {
                         return Box::pin(async { Ok(not_found()) });
                     } else if let Some((tx, _rx, m3u8_prod)) = stream_event_channel {
                         let mut rc = tx.clone().subscribe();
-                        let mut mp = m3u8_prod.clone();
+                        let mp = m3u8_prod.clone();
 
                         let fp = format!("./{}/{}/{}.m3u8", app_name, stream_name, stream_name);
                         return Box::pin(async move {
@@ -163,7 +163,7 @@ impl Service<Request<Body>> for HlsHandler {
             if ts_index > 0 {
                 let (left, _) = path.split_at(ts_index);
 
-                let rv: Vec<_> = left.split("/").collect();
+                let rv: Vec<_> = left.split('/').collect();
 
                 let app_name = String::from(rv[1]);
                 let stream_name = String::from(rv[2]);

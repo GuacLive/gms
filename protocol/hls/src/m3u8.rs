@@ -1,9 +1,8 @@
 use std::{
-    ops::Add,
     sync::{Arc, RwLock},
 };
 
-use crate::hls_event_manager::{HlsEventConsumer, M3u8Consumer, M3u8Event};
+use crate::hls_event_manager::{M3u8Consumer, M3u8Event};
 
 use {
     super::{
@@ -113,7 +112,7 @@ impl M3u8 {
         fs::create_dir_all(m3u8_folder.clone()).unwrap();
 
         Self {
-            hls_event_tx: hls_event_tx.clone(),
+            hls_event_tx,
             version: 6,
             sequence_no: Arc::new(RwLock::new(0)),
             duration,
@@ -153,8 +152,8 @@ impl M3u8 {
     pub fn add_segment(
         &mut self,
         duration: i64,
-        discontinuity: bool,
-        is_eof: bool,
+        _discontinuity: bool,
+        _is_eof: bool,
         ts_data: BytesMut,
     ) -> Result<(), MediaError> {
         let segment_count = self.segments.len();
@@ -206,20 +205,20 @@ impl M3u8 {
 
                 let partial = PartialSegment {
                     duration,
-                    name: ts_name.to_owned(),
+                    name: ts_name,
                     independent,
                 };
 
                 seg.add_partial(partial);
 
-                &self.segments.push_back(seg);
+                self.segments.push_back(seg);
             }
             Some(seg) => {
                 // add partial to existing segment
 
                 let partial = PartialSegment {
                     duration,
-                    name: ts_name.to_owned(),
+                    name: ts_name,
                     independent,
                 };
 

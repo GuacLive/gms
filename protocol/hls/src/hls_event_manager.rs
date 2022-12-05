@@ -47,9 +47,9 @@ pub struct HlsEventManager {
 
 impl HlsEventManager {
     pub fn new() -> HlsEventManager {
-        return HlsEventManager {
+        HlsEventManager {
             stream_to_producer: Arc::new(RwLock::new(HashMap::new())),
-        };
+        }
     }
 
     pub fn setup_dispatch_channel(&self) -> DispatchEventProducer {

@@ -1,7 +1,7 @@
 use super::errors::HlsError;
 use super::flv_data_receiver::FlvDataReceiver;
 use super::hls_event_manager::{DispatchEvent, DispatchEventProducer};
-use crate::hls_event_manager::HlsEventProducer;
+
 use rtmp::channels::define::ChannelEventProducer;
 use rtmp::channels::define::ClientEvent;
 use rtmp::channels::define::ClientEventConsumer;
