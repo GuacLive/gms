@@ -2,7 +2,9 @@
 mod tests {
     use crate::errors::MediaError;
     use crate::flv2hls::Flv2HlsRemuxer;
+    use crate::hls_event_manager::{HlsEventProducer, M3u8Consumer};
     use bytes::BytesMut;
+    use tokio::sync::{broadcast, mpsc};
     use xflv::define::FlvData;
 
     use xflv::demuxer::FlvDemuxer;
@@ -67,8 +69,19 @@ mod tests {
         demuxer.read_flv_header()?;
 
         let start = Instant::now();
-        let mut media_demuxer =
-            Flv2HlsRemuxer::new(5, 200, String::from("live"), String::from("test"));
+
+        let (tx, rx) = broadcast::channel(2);
+        let tx2 = tx.clone();
+        let (_m3u8_tx, m3u8_rx) = mpsc::channel(1);
+
+        let mut media_demuxer = Flv2HlsRemuxer::new(
+            tx2,
+            m3u8_rx,
+            5,
+            200,
+            String::from("live"),
+            String::from("test"),
+        );
 
         loop {
             let data_ = demuxer.read_flv_tag();
