@@ -5,6 +5,10 @@
 [rtmp]
 enabled = true
 port = 1935
+[rtmp.webhooks]
+enabled = true
+publish_url = "http://localhost:8080/api/v1/publish"
+publish_done_url = "http://localhost:8080/api/v1/publish_done"
 
 ##########################
 #   LOG configurations   #
