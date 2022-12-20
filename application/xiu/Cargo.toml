@@ -19,7 +19,7 @@ env_logger = "0.9"
 flexi_logger = "0.22"
 chrono = "0.4"
 failure = "0.1.1"
-clap = { version = "^3", features = [ "derive" ]}
+clap = { version = "^4", features = [ "derive" ]}
 
 rtmp = {path = "../../protocol/rtmp/"}
 httpflv = {path = "../../protocol/httpflv/"}
