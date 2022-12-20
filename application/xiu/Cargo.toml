@@ -11,15 +11,15 @@ keywords = ["rtmp", "hls", "httpflv", "video", "streaming"]
 edition = "2018"
 [dependencies]
 toml = "^0.5"
-serde_derive = "1"
+serde_derive = "^1"
 serde = { version = "^1", optional = true, features = ["derive"] }
 anyhow = "^1"
-log = "0.4.0"
-env_logger = "0.9"
-flexi_logger = "0.22"
-chrono = "0.4"
-failure = "0.1.1"
-clap = { version = "^3", features = [ "derive" ]}
+log = "^0.4"
+env_logger = "^0.10"
+flexi_logger = "^0.22"
+chrono = "^0.4"
+failure = "^0.1"
+clap = { version = "^4", features = [ "derive" ]}
 
 rtmp = {path = "../../protocol/rtmp/"}
 httpflv = {path = "../../protocol/httpflv/"}

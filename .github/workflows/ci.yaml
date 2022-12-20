@@ -20,7 +20,7 @@ jobs:
         os: [windows, ubuntu, macos]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
         with:
@@ -52,7 +52,7 @@ jobs:
         if: matrix.os == 'windows'
         run: mv target/release/xiu.exe xiu_${{ matrix.os }}.exe
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ matrix.channel == 'stable' }}
         with:
           name: xiu_${{ matrix.os }}
