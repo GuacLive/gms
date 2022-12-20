@@ -1,3 +1,5 @@
+use hyper::{Body, Method, Request, StatusCode};
+
 use {
     super::{
         common::Common,
@@ -22,10 +24,19 @@ use {
     },
     bytes::BytesMut,
     bytesio::{bytes_writer::AsyncBytesWriter, bytesio::BytesIO},
+    hyper::Client,
+    serde_derive::Deserialize,
     std::{collections::HashMap, sync::Arc, time::Duration},
     tokio::{net::TcpStream, sync::Mutex},
     uuid::Uuid,
 };
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct RtmpWebhookConfig {
+    pub enabled: bool,
+    pub publish_url: String,
+    pub publish_done_url: String,
+}
 
 enum ServerSessionState {
     Handshake,
@@ -48,6 +59,7 @@ pub struct ServerSession {
     state: ServerSessionState,
 
     pub common: Common,
+    webhook_config: RtmpWebhookConfig,
 
     bytesio_data: BytesMut,
     has_remaing_data: bool,
@@ -61,7 +73,11 @@ pub struct ServerSession {
 }
 
 impl ServerSession {
-    pub fn new(stream: TcpStream, event_producer: ChannelEventProducer) -> Self {
+    pub fn new(
+        stream: TcpStream,
+        event_producer: ChannelEventProducer,
+        webhook_config: RtmpWebhookConfig,
+    ) -> Self {
         let net_io = Arc::new(Mutex::new(BytesIO::new(stream)));
         let subscriber_id = Uuid::new_v4();
         Self {
@@ -82,6 +98,7 @@ impl ServerSession {
             has_remaing_data: false,
 
             connect_command_object: None,
+            webhook_config,
         }
     }
 
@@ -555,6 +572,26 @@ impl ServerSession {
         Ok(())
     }
 
+    pub async fn auth(&mut self) -> StatusCode {
+        let stream_key = self.stream_name.clone();
+        let app_name = self.app_name.clone();
+        let url = self.webhook_config.clone().publish_url;
+        let client = Client::new();
+        let mut req = Request::builder()
+            .method(Method::POST)
+            .uri(url)
+            .header("Content-Type", "application/json")
+            .body(Body::from(format!(
+                r#"{{"app_name":"{}","stream_key":"{}"}}"#,
+                app_name, stream_key
+            )))
+            .expect("request body");
+
+        let future = client.request(req);
+        let response = future.await;
+
+        return response.unwrap().status();
+    }
     pub async fn on_publish(
         &mut self,
         transaction_id: &f64,
@@ -619,6 +656,25 @@ impl ServerSession {
             self.stream_name
         );
 
+        let webhook_config = self.webhook_config.clone();
+        if webhook_config.enabled {
+            let status = self.auth().await;
+            if !status.is_success() {
+                log::info!(
+                    "[ S->C ] [publish failed]  app_name: {}, stream_name: {}",
+                    self.app_name,
+                    self.stream_name
+                );
+                return Err(SessionError {
+                    value: SessionErrorValue::Finish,
+                });
+            }
+        }
+        log::info!(
+            "[ S->C ] [publish success]  app_name: {}, stream_name: {}",
+            self.app_name,
+            self.stream_name
+        );
         self.common
             .publish_to_channels(self.app_name.clone(), self.stream_name.clone())
             .await?;

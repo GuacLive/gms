@@ -1,4 +1,3 @@
-
 use {
     //https://rustcc.cn/article?id=6dcbf032-0483-4980-8bfe-c64a7dfb33c7
     anyhow::Result,
@@ -157,13 +156,17 @@ impl Service {
             let listen_port = rtmp_cfg_value.port;
             let address = format!("0.0.0.0:{port}", port = listen_port);
 
-            let mut rtmp_server = RtmpServer::new(address, producer);
-            tokio::spawn(async move {
-                if let Err(err) = rtmp_server.run().await {
-                    //print!("rtmp server  error {}\n", err);
-                    log::error!("rtmp server error: {}\n", err);
-                }
-            });
+            /*static pull*/
+            if let Some(webhooks_cfg_value) = &rtmp_cfg_value.webhooks {
+                let mut rtmp_server =
+                    RtmpServer::new(address, producer, webhooks_cfg_value.clone());
+                tokio::spawn(async move {
+                    if let Err(err) = rtmp_server.run().await {
+                        //print!("rtmp server  error {}\n", err);
+                        log::error!("rtmp server error: {}\n", err);
+                    }
+                });
+            }
         }
 
         Ok(())
@@ -203,11 +206,8 @@ impl Service {
 
             let event_producer = channel.get_session_event_producer();
             let client_event_consumer = channel.get_client_event_consumer();
-            let mut rtmp_event_processor = RtmpEventProcessor::new(
-                client_event_consumer,
-                event_producer,
-                hls_dispatch,
-            );
+            let mut rtmp_event_processor =
+                RtmpEventProcessor::new(client_event_consumer, event_producer, hls_dispatch);
 
             tokio::spawn(async move {
                 if let Err(err) = rtmp_event_processor.run().await {

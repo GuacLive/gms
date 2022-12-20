@@ -1,4 +1,5 @@
 use super::errors::ConfigError;
+use rtmp::session::server_session::RtmpWebhookConfig;
 use serde_derive::Deserialize;
 use std::fs;
 use std::vec::Vec;
@@ -17,6 +18,7 @@ pub struct RtmpConfig {
     pub port: u32,
     pub pull: Option<RtmpPullConfig>,
     pub push: Option<Vec<RtmpPushConfig>>,
+    pub webhooks: Option<RtmpWebhookConfig>,
 }
 #[derive(Debug, Deserialize, Clone)]
 pub struct RtmpPullConfig {

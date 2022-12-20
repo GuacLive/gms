@@ -1,10 +1,11 @@
 extern crate byteorder;
 extern crate bytes;
+extern crate bytesio;
 extern crate chrono;
 extern crate failure;
 extern crate hmac;
-extern crate bytesio;
 extern crate rand;
+extern crate serde_derive;
 extern crate sha2;
 extern crate tokio;
 
