@@ -433,7 +433,7 @@ impl ServerSession {
             .write_on_status(
                 transaction_id,
                 &"status".to_string(),
-                &"NetStream.DeleteStream.Suceess".to_string(),
+                &"NetStream.DeleteStream.Success".to_string(),
                 &"".to_string(),
             )
             .await?;
