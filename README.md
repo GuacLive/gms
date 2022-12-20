@@ -1,10 +1,6 @@
-
-
-
 <p align="center" width="100%">
     <img width="38%" src="https://user-images.githubusercontent.com/10411078/149529602-7dcbaf26-55cd-4588-8989-206b76d32f07.png">
 </p>
-
 
 ![XIU](https://img.shields.io/:XIU-blue.svg)[![crates.io](https://img.shields.io/crates/v/xiu.svg)](https://crates.io/crates/xiu)
 [![crates.io](https://img.shields.io/crates/d/xiu.svg)](https://crates.io/crates/xiu)
@@ -23,8 +19,6 @@
 ![wechat](https://img.shields.io/:微信-harlancc-blue.svg)
 ![qqgroup](https://img.shields.io/:QQ群-24893069-blue.svg)
 
-
-
 [中文文档](https://github.com/harlanc/xiu/blob/master/README_CN.md)
 
 Xiu is a simple and secure live media server written by pure Rust, it now supports popular live protocols like RTMP/HLS/HTTP-FLV (and maybe other protocols in the future), you can deploy it as a stand-alone server or a cluster using the relay feature.
@@ -32,7 +26,7 @@ Xiu is a simple and secure live media server written by pure Rust, it now suppor
 ## Features
 
 - [x] RTMP
-  - [x] publish and play 
+  - [x] publish and play
   - [x] relay: static push
   - [x] relay: static pull
 - [x] HTTPFLV
@@ -40,50 +34,59 @@ Xiu is a simple and secure live media server written by pure Rust, it now suppor
 - [ ] SRT
 
 ## Preparation
+
 #### Install Rust and Cargo
 
 [Document](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 
-## Install and run 
+## Install and run
 
 There are two ways to install xiu :
- 
- - Using cargo to install
- - Building from source
 
+- Using cargo to install
+- Building from source
 
 ### Install using cargo
 
 Issue the following command to install xiu:
 
     cargo install xiu
+
 Start the service with the following command:
 
     xiu configuration_file_path/config.toml
-    
+
 ### Build from souce
 
 #### Clone Xiu
 
     git clone https://github.com/harlanc/xiu.git
-    
+
 use master branch
-    
+
 #### Build
 
     cd ./xiu/application/xiu
     cargo build --release
+
 #### Run
 
     cd ./xiu/target/release
     ./xiu config.toml
-    
+
 ## Configurations
 
 ##### RTMP
+
     [rtmp]
     enabled = true
     port = 1935
+
+    # send webhook on publish and publish done
+    [rtmp.webhooks]
+    enabled = true
+    publish_url = "http://localhost:8080/api/v1/publish"
+    publish_done_url = "http://localhost:8080/api/v1/publish_done"
 
     # pull streams from other server node.
     [rtmp.pull]
@@ -100,7 +103,7 @@ use master branch
     enabled = true
     address = "192.168.0.3"
     port = 1935
-    
+
 ##### HTTPFLV
 
     [httpflv]
@@ -110,6 +113,7 @@ use master branch
     port = 8081
 
 ##### HLS
+
     [hls]
     # true or false to enable or disable the feature
     enabled = true
@@ -120,7 +124,7 @@ use master branch
 
     [log]
     level = "info"
-    
+
 ### Configuration examples
 
 I edit some configuration files under the following path which can be used directly:
@@ -134,9 +138,6 @@ It contains the following 4 files:
     config_rtmp_httpflv.toml //enable rtmp and httpflv
     config_rtmp_httpflv_hls.toml //enable all the 3 protocols
 
-    
-
-    
 ## Scenarios
 
 ##### Push
@@ -145,9 +146,7 @@ You can use two ways:
 
 - Use OBS to push a live rtmp stream
 - Or use FFmpeg to push a rtmp stream:
-     
-        ffmpeg -re -stream_loop -1 -i test.mp4 -c:a copy -c:v copy -f flv -flvflags no_duration_filesize rtmp://127.0.0.1:1935/live/test
-
+  ffmpeg -re -stream_loop -1 -i test.mp4 -c:a copy -c:v copy -f flv -flvflags no_duration_filesize rtmp://127.0.0.1:1935/live/test
 
 ##### Play
 
@@ -156,7 +155,7 @@ Use ffplay to play the rtmp/httpflv/hls live stream:
     ffplay -i rtmp://localhost:1935/live/test
     ffplay -i http://localhost:8081/live/test.flv
     ffplay -i http://localhost:8080/live/test/test.m3u8
-    
+
 ##### Relay - Static push
 
 The configuration files are as follows:
@@ -170,7 +169,7 @@ The configuration file of Service 1 named config.toml:
     enabled = true
     address = "localhost"
     port = 1936
-    
+
 The configuration file of Service 2 named config_push.toml:
 
     [rtmp]
@@ -182,14 +181,11 @@ Run the 2 services:
     ./xiu config.toml
     ./xiu config_push.toml
 
-
 Use the above methods to push rtmp live stream to service 1, then the stream can be pushed to service 2 automatically, you can play the same live stream from both the two services:
 
     ffplay -i rtmp://localhost:1935/live/test
     ffplay -i rtmp://localhost:1936/live/test
 
-
-    
 ##### Relay - Static pull
 
 The configuration file are as follows:
@@ -200,7 +196,6 @@ The configuration file of Service 1 named config.toml:
     enabled = true
     port = 1935
 
- 
 The configuration file of Service 2 named config_pull.toml:
 
     [rtmp]
@@ -220,15 +215,15 @@ Use the above methods to push live stream to service 1, when you play the stream
 
     ffplay -i rtmp://localhost:1935/live/test
     ffplay -i rtmp://localhost:1936/live/test
+
 ## Star History
 
 [link](https://star-history.t9t.io/#harlanc/xiu)
 
 ## Thanks
 
- - [media_server](https://github.com/ireader/media-server.git)
+- [media_server](https://github.com/ireader/media-server.git)
 
 ## Others
 
 Open issues if you have any problems. Star and pull requests are welcomed. Your stars can make this project go faster and further.
- 
