@@ -577,7 +577,7 @@ impl ServerSession {
         let app_name = self.app_name.clone();
         let url = self.webhook_config.clone().publish_url;
         let client = Client::new();
-        let mut req = Request::builder()
+        let req = Request::builder()
             .method(Method::POST)
             .uri(url)
             .header("Content-Type", "application/json")
@@ -590,7 +590,7 @@ impl ServerSession {
         let future = client.request(req);
         let response = future.await;
 
-        return response.unwrap().status();
+        response.unwrap().status()
     }
     pub async fn on_publish(
         &mut self,
