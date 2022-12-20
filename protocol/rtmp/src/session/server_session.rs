@@ -62,7 +62,7 @@ pub struct ServerSession {
     webhook_config: RtmpWebhookConfig,
 
     bytesio_data: BytesMut,
-    has_remaing_data: bool,
+    has_remaining_data: bool,
 
     /* Used to mark the subscriber's the data producer
     in channels and delete it from map when unsubscribe
@@ -95,7 +95,7 @@ impl ServerSession {
 
             subscriber_id,
             bytesio_data: BytesMut::new(),
-            has_remaing_data: false,
+            has_remaining_data: false,
 
             connect_command_object: None,
             webhook_config,
@@ -138,7 +138,7 @@ impl ServerSession {
                 let left_bytes = self.handshaker.get_remaining_bytes();
                 if !left_bytes.is_empty() {
                     self.unpacketizer.extend_data(&left_bytes[..]);
-                    self.has_remaing_data = true;
+                    self.has_remaining_data = true;
                 }
                 log::info!("[ S->C ] [send_set_chunk_size] ");
                 self.send_set_chunk_size().await?;
@@ -151,7 +151,7 @@ impl ServerSession {
     }
 
     async fn read_parse_chunks(&mut self) -> Result<(), SessionError> {
-        if !self.has_remaing_data {
+        if !self.has_remaining_data {
             match self
                 .io
                 .lock()
@@ -176,7 +176,7 @@ impl ServerSession {
             self.unpacketizer.extend_data(&self.bytesio_data[..]);
         }
 
-        self.has_remaing_data = false;
+        self.has_remaining_data = false;
 
         loop {
             let result = self.unpacketizer.read_chunks();
