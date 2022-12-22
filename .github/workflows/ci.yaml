@@ -42,28 +42,28 @@ jobs:
 
       - name: Build
         continue-on-error: ${{ matrix.channel != 'stable' }}
-        run: cargo build --release --package xiu --bin xiu
+        run: cargo build --release --package gms --bin gms
 
       - name: Rename binary
         if: matrix.os != 'windows'
-        run: mv target/release/xiu xiu_${{ matrix.os }}
+        run: mv target/release/gms gms_${{ matrix.os }}
 
       - name: Rename binary (win)
         if: matrix.os == 'windows'
-        run: mv target/release/xiu.exe xiu_${{ matrix.os }}.exe
+        run: mv target/release/gms.exe gms_${{ matrix.os }}.exe
 
       - uses: actions/upload-artifact@v3
         if: ${{ matrix.channel == 'stable' }}
         with:
-          name: xiu_${{ matrix.os }}
-          path: xiu_${{ matrix.os }}*
+          name: gms_${{ matrix.os }}
+          path: gms_${{ matrix.os }}*
 
       - uses: alexellis/upload-assets@0.4.0
         if: startsWith(github.ref, 'refs/tags/') && matrix.channel == 'stable'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          asset_paths: '["xiu_${{ matrix.os }}*"]'
+          asset_paths: '["gms_${{ matrix.os }}*"]'
 
   docker:
     needs: build

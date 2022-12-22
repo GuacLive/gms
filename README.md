@@ -1,27 +1,6 @@
-<p align="center" width="100%">
-    <img width="38%" src="https://user-images.githubusercontent.com/10411078/149529602-7dcbaf26-55cd-4588-8989-206b76d32f07.png">
-</p>
+## GMS (Guac Media Server)
 
-![XIU](https://img.shields.io/:XIU-blue.svg)[![crates.io](https://img.shields.io/crates/v/xiu.svg)](https://crates.io/crates/xiu)
-[![crates.io](https://img.shields.io/crates/d/xiu.svg)](https://crates.io/crates/xiu)
-![RTMP](https://img.shields.io/:RTMP-blue.svg)[![crates.io](https://img.shields.io/crates/v/rtmp.svg)](https://crates.io/crates/rtmp)
-[![crates.io](https://img.shields.io/crates/d/rtmp.svg)](https://crates.io/crates/rtmp)
-![HTTPFLV](https://img.shields.io/:HTTPFLV-blue.svg)[![crates.io](https://img.shields.io/crates/v/httpflv.svg)](https://crates.io/crates/httpflv)
-[![crates.io](https://img.shields.io/crates/d/httpflv.svg)](https://crates.io/crates/httpflv)
-![HLS](https://img.shields.io/:HLS-blue.svg)[![crates.io](https://img.shields.io/crates/v/hls.svg)](https://crates.io/crates/hls)
-[![crates.io](https://img.shields.io/crates/d/hls.svg)](https://crates.io/crates/hls)
-![FLV](https://img.shields.io/:FLV-blue.svg)[![crates.io](https://img.shields.io/crates/v/xflv.svg)](https://crates.io/crates/xflv)
-[![crates.io](https://img.shields.io/crates/d/xflv.svg)](https://crates.io/crates/xflv)
-![MPEGTS](https://img.shields.io/:MPEGTS-blue.svg)[![crates.io](https://img.shields.io/crates/v/xmpegts.svg)](https://crates.io/crates/xmpegts)
-[![crates.io](https://img.shields.io/crates/d/xmpegts.svg)](https://crates.io/crates/xmpegts)
-[![](https://app.travis-ci.com/harlanc/xiu.svg?branch=master)](https://app.travis-ci.com/github/harlanc/xiu)
-[![](https://img.shields.io/discord/894502149764034560?logo=discord)](https://discord.gg/gS5wBRtpcB)
-![wechat](https://img.shields.io/:微信-harlancc-blue.svg)
-![qqgroup](https://img.shields.io/:QQ群-24893069-blue.svg)
-
-[中文文档](https://github.com/harlanc/xiu/blob/master/README_CN.md)
-
-Xiu is a simple and secure live media server written by pure Rust, it now supports popular live protocols like RTMP/HLS/HTTP-FLV (and maybe other protocols in the future), you can deploy it as a stand-alone server or a cluster using the relay feature.
+gms is a simple and secure live media server written by pure Rust, it now supports popular live protocols like RTMP/HLS/LLHLS/HTTP-FLV (and maybe other protocols in the future), you can deploy it as a stand-alone server or a cluster using the relay feature.
 
 ## Features
 
@@ -31,6 +10,7 @@ Xiu is a simple and secure live media server written by pure Rust, it now suppor
   - [x] relay: static pull
 - [x] HTTPFLV
 - [x] HLS
+- [x] LLHLS
 - [ ] SRT
 
 ## Preparation
@@ -41,38 +21,38 @@ Xiu is a simple and secure live media server written by pure Rust, it now suppor
 
 ## Install and run
 
-There are two ways to install xiu :
+There are two ways to install gms:
 
 - Using cargo to install
 - Building from source
 
 ### Install using cargo
 
-Issue the following command to install xiu:
+Issue the following command to install gms:
 
-    cargo install xiu
+    cargo install gms
 
 Start the service with the following command:
 
-    xiu configuration_file_path/config.toml
+    gms configuration_file_path/config.toml
 
 ### Build from souce
 
-#### Clone Xiu
+#### Clone gms
 
-    git clone https://github.com/harlanc/xiu.git
+    git clone https://github.com/guaclive/gms.git
 
 use master branch
 
 #### Build
 
-    cd ./xiu/application/xiu
+    cd ./gms/application/gms
     cargo build --release
 
 #### Run
 
-    cd ./xiu/target/release
-    ./xiu config.toml
+    cd ./gms/target/release
+    ./gms config.toml
 
 ## Configurations
 
@@ -129,7 +109,7 @@ use master branch
 
 I edit some configuration files under the following path which can be used directly:
 
-    xiu/application/xiu/src/config
+    gms/application/gms/src/config
 
 It contains the following 4 files:
 
@@ -178,8 +158,8 @@ The configuration file of Service 2 named config_push.toml:
 
 Run the 2 services:
 
-    ./xiu config.toml
-    ./xiu config_push.toml
+    ./gms config.toml
+    ./gms config_push.toml
 
 Use the above methods to push rtmp live stream to service 1, then the stream can be pushed to service 2 automatically, you can play the same live stream from both the two services:
 
@@ -208,21 +188,19 @@ The configuration file of Service 2 named config_pull.toml:
 
 Run the 2 services:
 
-    ./xiu config.toml
-    ./xiu config_pull.toml
+    ./gms config.toml
+    ./gms config_pull.toml
 
 Use the above methods to push live stream to service 1, when you play the stream from serivce 2, it will pull the stream from service 1:
 
     ffplay -i rtmp://localhost:1935/live/test
     ffplay -i rtmp://localhost:1936/live/test
 
-## Star History
-
-[link](https://star-history.t9t.io/#harlanc/xiu)
-
 ## Thanks
 
 - [media_server](https://github.com/ireader/media-server.git)
+- [xiu](https://github.com/harlanc/xiu) - Codebase this was forked from.
+- [Phineas](https://github.com/phineas/xiu) - LLHLS implementation.
 
 ## Others
 

@@ -15,17 +15,17 @@ This is a simple rtmp library for easy use and reading, you can build your own s
 
         let mut channel = ChannelsManager::new();
         let producer = channel.get_session_event_producer();
-    
+
         let listen_port = 1935;
         let address = format!("0.0.0.0:{port}", port = listen_port);
-    
+
         let mut rtmp_server = RtmpServer::new(address, producer.clone());
         tokio::spawn(async move {
             if let Err(err) = rtmp_server.run().await {
                 log::error!("rtmp server error: {}\n", err);
             }
         });
-    
+
         tokio::spawn(async move { channel.run().await });
 
         signal::ctrl_c().await?;
@@ -44,7 +44,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
 
         let mut channel = ChannelsManager::new();
         let producer = channel.get_session_event_producer();
-        
+
         // push the rtmp stream from local to 192.168.0.2:1935
         let address = format!(
             "{ip}:{port}",
@@ -75,7 +75,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
             address,
             channel.get_client_event_consumer(),
             producer.clone(),
-        
+
         tokio::spawn(async move {
             if let Err(err) = pull_client.run().await {
                 log::error!("pull client error {}\n", err);
@@ -83,45 +83,43 @@ This is a simple rtmp library for easy use and reading, you can build your own s
         });
         channel.set_rtmp_pull_enabled(true);
 
-    
+
         // the local rtmp server
         let listen_port = 1935;
         let address = format!("0.0.0.0:{port}", port = listen_port);
-    
+
         let mut rtmp_server = RtmpServer::new(address, producer.clone());
         tokio::spawn(async move {
             if let Err(err) = rtmp_server.run().await {
                 log::error!("rtmp server error: {}\n", err);
             }
         });
-    
+
         tokio::spawn(async move { channel.run().await });
 
         signal::ctrl_c().await?;
         Ok(())
     }
 
- For more detailed implementation please reference to [xiu server](https://github.com/harlanc/xiu/blob/master/application/xiu/src/main.rs)
-
-     
+For more detailed implementation please reference to [gms server](https://github.com/guaclive/gms/blob/master/application/gms/src/main.rs)
 
 # Version History
-
 
 ## v0.0.1
 
 - support rtmp pushlish and play
 
 ## v0.0.2
+
 - support rtmp relay pull and static push
 
 ## v0.0.3
 
-- add amf0 functions 
+- add amf0 functions
 
 ## v0.0.4
 
-- add timestamp for metadata 
+- add timestamp for metadata
 
 ## v0.0.5
 
@@ -158,7 +156,3 @@ This is a simple rtmp library for easy use and reading, you can build your own s
 ## v0.0.14
 
 - fix handshake error.[#23]
-
-
-
-

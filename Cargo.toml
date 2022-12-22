@@ -4,7 +4,7 @@ members = [
   "protocol/httpflv",
   "protocol/hls",
   "library/bytesio",
-  "application/xiu",
+  "application/gms",
   "library/container/flv",
   "library/container/mpegts"
 ]

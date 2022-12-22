@@ -2,7 +2,7 @@
 mod tests {
     use crate::errors::MediaError;
     use crate::flv2hls::Flv2HlsRemuxer;
-    
+
     use bytes::BytesMut;
     use tokio::sync::{broadcast, mpsc};
     use xflv::define::FlvData;
@@ -57,7 +57,7 @@ mod tests {
     #[allow(dead_code)]
     fn test_flv2hls() -> Result<(), MediaError> {
         let mut file =
-            File::open("/Users/phin/misc/xiu/protocol/hls/src/xgplayer_demo.flv").unwrap();
+            File::open("/Users/phin/misc/gms/protocol/hls/src/xgplayer_demo.flv").unwrap();
         let mut contents = Vec::new();
 
         file.read_to_end(&mut contents)?;
