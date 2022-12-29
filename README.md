@@ -42,8 +42,6 @@ Start the service with the following command:
 
     git clone https://github.com/guaclive/gms.git
 
-use master branch
-
 #### Build
 
     cd ./gms/application/gms
@@ -54,7 +52,7 @@ use master branch
     cd ./gms/target/release
     ./gms config.toml
 
-## Configurations
+## Configuration
 
 ##### RTMP
 
