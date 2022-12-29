@@ -24,7 +24,8 @@ use {
     },
     bytes::BytesMut,
     bytesio::{bytes_writer::AsyncBytesWriter, bytesio::BytesIO},
-    hyper::Client,
+    hyper::client,
+    hyper_rustls::ConfigBuilderExt,
     serde_derive::Deserialize,
     std::{collections::HashMap, sync::Arc, time::Duration},
     tokio::{net::TcpStream, sync::Mutex},
@@ -588,7 +589,23 @@ impl ServerSession {
     pub async fn auth(&mut self, url: &str) -> StatusCode {
         let stream_key = self.stream_name.clone();
         let app_name = self.app_name.clone();
-        let client = Client::new();
+        log::info!("stream_key: {}", stream_key);
+
+        let tls = rustls::ClientConfig::builder()
+            .with_safe_defaults()
+            .with_native_roots()
+            .with_no_client_auth();
+
+        // Prepare the HTTPS connector
+        let https = hyper_rustls::HttpsConnectorBuilder::new()
+            .with_tls_config(tls)
+            .https_or_http()
+            .enable_http1()
+            .build();
+
+        // Build the hyper client from the HTTPS connector.
+        let client: client::Client<_, hyper::Body> = client::Client::builder().build(https);
+
         let req = Request::builder()
             .method(Method::POST)
             .uri(url)
