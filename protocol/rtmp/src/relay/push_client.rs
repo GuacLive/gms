@@ -28,7 +28,7 @@ impl PushClient {
     }
 
     pub async fn run(&mut self) -> Result<(), ClientError> {
-        log::info!("push client run...");
+        tracing::info!("push client run...");
 
         loop {
             let val = self.client_event_consumer.recv().await?;
@@ -37,7 +37,7 @@ impl PushClient {
                     app_name,
                     stream_name,
                 } => {
-                    log::info!(
+                    tracing::info!(
                         "publish app_name: {} stream_name: {} address: {}",
                         app_name.clone(),
                         stream_name.clone(),
@@ -55,13 +55,13 @@ impl PushClient {
 
                     tokio::spawn(async move {
                         if let Err(err) = client_session.run().await {
-                            log::error!("client_session as push client run error: {}", err);
+                            tracing::error!("client_session as push client run error: {}", err);
                         }
                     });
                 }
 
                 _ => {
-                    log::info!("push client receive other events");
+                    tracing::info!("push client receive other events");
                 }
             }
         }

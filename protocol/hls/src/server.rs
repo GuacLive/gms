@@ -11,7 +11,7 @@ pub async fn run(port: u32, hls_event_manager: HlsEventManager) -> Result<(), hy
     let t = Arc::clone(&hls_event_manager.stream_to_producer);
 
     let server = Server::bind(&sock_addr).serve(MakeHlsHandler { stp_map: t });
-    log::info!("Hls server listening on http://{}", sock_addr);
+    tracing::info!("Hls server listening on http://{}", sock_addr);
     if let Err(e) = server.await {
         eprintln!("server error: {}", e);
     }

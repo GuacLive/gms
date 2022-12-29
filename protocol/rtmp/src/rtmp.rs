@@ -30,7 +30,7 @@ impl RtmpServer {
         let socket_addr: &SocketAddr = &self.address.parse().unwrap();
         let listener = TcpListener::bind(socket_addr).await?;
 
-        log::info!("Rtmp server listening on tcp://{}", socket_addr);
+        tracing::info!("Rtmp server listening on tcp://{}", socket_addr);
         loop {
             let (tcp_stream, _) = listener.accept().await?;
             //tcp_stream.set_keepalive(Some(Duration::from_secs(30)))?;
@@ -42,13 +42,13 @@ impl RtmpServer {
             );
             tokio::spawn(async move {
                 if let Err(err) = session.run().await {
-                    log::info!(
+                    tracing::info!(
                         "session exits, session_type: {}, app_name: {}, stream_name: {}",
                         session.common.session_type,
                         session.app_name,
                         session.stream_name
                     );
-                    log::trace!("session err: {}", err);
+                    tracing::trace!("session err: {}", err);
                 }
             });
         }

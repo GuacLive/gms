@@ -187,7 +187,7 @@ impl FlvDataReceiver {
             session_info,
         };
         if let Err(err) = self.event_producer.send(subscribe_event) {
-            log::error!("unsubscribe_from_channels err {}\n", err);
+            tracing::error!("unsubscribe_from_channels err {}\n", err);
         }
 
         Ok(())

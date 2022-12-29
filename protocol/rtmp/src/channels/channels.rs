@@ -165,7 +165,7 @@ impl Transmiter {
                                     if let Err(audio_err) = v.send(data.clone()).map_err(|_| ChannelError {
                                             value: ChannelErrorValue::SendAudioError,
                                     }){
-                                        log::error!("Transmiter send error: {}",audio_err);
+                                        tracing::error!("Transmiter send error: {}",audio_err);
                                     }
 
                                 }
@@ -182,7 +182,7 @@ impl Transmiter {
                                     if let Err(video_err) = v.send(data.clone()).map_err(|_| ChannelError {
                                         value: ChannelErrorValue::SendVideoError,
                                     }){
-                                        log::error!("Transmiter send error: {}",video_err);
+                                        tracing::error!("Transmiter send error: {}",video_err);
                                     }
                                 }
                             }
@@ -256,7 +256,7 @@ impl ChannelsManager {
 
     pub async fn event_loop(&mut self) {
         while let Some(message) = self.channel_event_consumer.recv().await {
-            log::info!("{}", message);
+            tracing::info!("{}", message);
             match message {
                 ChannelEvent::Publish {
                     app_name,
@@ -267,11 +267,11 @@ impl ChannelsManager {
                     match rv {
                         Ok(producer) => {
                             if let Err(_) = responder.send(producer) {
-                                log::error!("event_loop responder send err");
+                                tracing::error!("event_loop responder send err");
                             }
                         }
                         Err(err) => {
-                            log::error!("event_loop Publish err: {}\n", err);
+                            tracing::error!("event_loop Publish err: {}\n", err);
                             continue;
                         }
                     }
@@ -282,7 +282,7 @@ impl ChannelsManager {
                     stream_name,
                 } => {
                     if let Err(err) = self.unpublish(&app_name, &stream_name) {
-                        log::error!("event_loop Unpublish err: {}\n", err);
+                        tracing::error!("event_loop Unpublish err: {}\n", err);
                     }
                 }
                 ChannelEvent::Subscribe {
@@ -295,7 +295,7 @@ impl ChannelsManager {
                     match rv {
                         Ok(consumer) => if let Err(_) = responder.send(consumer) {},
                         Err(err) => {
-                            log::error!("event_loop Subscribe error: {}", err);
+                            tracing::error!("event_loop Subscribe error: {}", err);
                             continue;
                         }
                     }
@@ -332,7 +332,7 @@ impl ChannelsManager {
                 })?;
 
                 if let Ok(consumer) = receiver.await {
-                    log::info!(
+                    tracing::info!(
                         "subscribe get consumer successfully, app_name: {}, stream_name: {}",
                         app_name,
                         stream_name
@@ -343,7 +343,7 @@ impl ChannelsManager {
         }
 
         if self.pull_enabled {
-            log::info!(
+            tracing::info!(
                 "subscribe: try to pull stream, app_name: {}, stream_name: {}",
                 app_name,
                 stream_name
@@ -429,14 +429,14 @@ impl ChannelsManager {
 
             tokio::spawn(async move {
                 if let Err(err) = transmiter.run().await {
-                    log::error!(
+                    tracing::error!(
                         "transmiter run error, app_name: {}, stream_name: {}, error: {}",
                         app_name_clone,
                         stream_name_clone,
                         err,
                     );
                 } else {
-                    log::info!(
+                    tracing::info!(
                         "transmiter exists: app_name: {}, stream_name: {}",
                         app_name_clone,
                         stream_name_clone
@@ -477,7 +477,7 @@ impl ChannelsManager {
                         value: ChannelErrorValue::SendError,
                     })?;
                     val.remove(stream_name);
-                    // log::info!(
+                    // tracing::info!(
                     //     "unpublish remove stream, app_name: {},stream_name: {}",
                     //     app_name,
                     //     stream_name

@@ -16,4 +16,4 @@ bytes = "1.0.0"
 failure = "0.1.1"
 bitvec = "0.20"
 bytesio = {path = "../../bytesio/"}
-log = "0.4"
+tracing = "^0.1"

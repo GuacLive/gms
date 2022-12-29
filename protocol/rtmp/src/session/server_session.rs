@@ -141,7 +141,7 @@ impl ServerSession {
                     self.unpacketizer.extend_data(&left_bytes[..]);
                     self.has_remaining_data = true;
                 }
-                log::info!("[ S->C ] [send_set_chunk_size] ");
+                tracing::info!("[ S->C ] [send_set_chunk_size] ");
                 self.send_set_chunk_size().await?;
                 return Ok(());
             }
@@ -297,11 +297,11 @@ impl ServerSession {
 
         match cmd_name.as_str() {
             "connect" => {
-                log::info!("[ S<-C ] [connect] ");
+                tracing::info!("[ S<-C ] [connect] ");
                 self.on_connect(transaction_id, obj).await?;
             }
             "createStream" => {
-                log::info!("[ S<-C ] [create stream] ");
+                tracing::info!("[ S<-C ] [create stream] ");
                 self.on_create_stream(transaction_id).await?;
             }
             "deleteStream" => {
@@ -313,7 +313,7 @@ impl ServerSession {
                         },
                         _ => 0.0,
                     };
-                    log::info!(
+                    tracing::info!(
                         "[ S<-C ] [delete stream] app_name: {}, stream_name: {}",
                         self.app_name,
                         self.stream_name
@@ -323,7 +323,7 @@ impl ServerSession {
                 }
             }
             "play" => {
-                log::info!(
+                tracing::info!(
                     "[ S<-C ] [play]  app_name: {}, stream_name: {}",
                     self.app_name,
                     self.stream_name
@@ -342,7 +342,7 @@ impl ServerSession {
     }
 
     fn on_set_chunk_size(&mut self, chunk_size: usize) -> Result<(), SessionError> {
-        log::info!(
+        tracing::info!(
             "[ S<-C ] [set chunk size]  app_name: {}, stream_name: {}, chunk size: {}",
             self.app_name,
             self.stream_name,
@@ -360,12 +360,12 @@ impl ServerSession {
         self.connect_command_object = Some(command_obj.clone());
         let mut control_message =
             ProtocolControlMessagesWriter::new(AsyncBytesWriter::new(self.io.clone()));
-        log::info!("[ S->C ] [set window_acknowledgement_size]");
+        tracing::info!("[ S->C ] [set window_acknowledgement_size]");
         control_message
             .write_window_acknowledgement_size(define::WINDOW_ACKNOWLEDGEMENT_SIZE)
             .await?;
 
-        log::info!("[ S->C ] [set set_peer_bandwidth]",);
+        tracing::info!("[ S->C ] [set set_peer_bandwidth]",);
         control_message
             .write_set_peer_bandwidth(
                 define::PEER_BANDWIDTH,
@@ -390,7 +390,7 @@ impl ServerSession {
         };
 
         let mut netconnection = NetConnection::new(Arc::clone(&self.io));
-        log::info!("[ S->C ] [set connect_response]",);
+        tracing::info!("[ S->C ] [set connect_response]",);
         netconnection
             .write_connect_response(
                 transaction_id,
@@ -412,7 +412,7 @@ impl ServerSession {
             .write_create_stream_response(transaction_id, &define::STREAM_ID)
             .await?;
 
-        log::info!(
+        tracing::info!(
             "[ S->C ] [create_stream_response]  app_name: {}",
             self.app_name,
         );
@@ -443,7 +443,7 @@ impl ServerSession {
         if webhook_config.enabled {
             let status = self.auth(&webhook_config.publish_done_url).await;
             if !status.is_success() {
-                log::info!(
+                tracing::info!(
                     "[ S->C ] [delete stream failed]  app_name: {}, stream_name: {}",
                     self.app_name,
                     self.stream_name
@@ -453,12 +453,12 @@ impl ServerSession {
                 });
             }
         }
-        log::info!(
+        tracing::info!(
             "[ S->C ] [delete stream success]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name
         );
-        log::trace!("{}", stream_id);
+        tracing::trace!("{}", stream_id);
 
         Ok(())
     }
@@ -517,12 +517,12 @@ impl ServerSession {
 
         let mut event_messages = EventMessagesWriter::new(AsyncBytesWriter::new(self.io.clone()));
         event_messages.write_stream_begin(*stream_id).await?;
-        log::info!(
+        tracing::info!(
             "[ S->C ] [stream begin]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name
         );
-        log::trace!(
+        tracing::trace!(
             "{} {} {}",
             start.is_some(),
             duration.is_some(),
@@ -567,7 +567,7 @@ impl ServerSession {
             .await?;
 
         event_messages.write_stream_is_record(*stream_id).await?;
-        log::info!(
+        tracing::info!(
             "[ S->C ] [stream is record]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name
@@ -589,7 +589,7 @@ impl ServerSession {
     pub async fn auth(&mut self, url: &str) -> StatusCode {
         let stream_key = self.stream_name.clone();
         let app_name = self.app_name.clone();
-        log::info!("stream_key: {}", stream_key);
+        tracing::info!("stream_key: {}", stream_key);
 
         let tls = rustls::ClientConfig::builder()
             .with_safe_defaults()
@@ -622,11 +622,11 @@ impl ServerSession {
         match response {
             Ok(res) => {
                 let status = res.status();
-                log::info!("auth status: {:?}", status);
+                tracing::info!("auth status: {:?}", status);
                 status
             }
             Err(e) => {
-                log::error!("auth error: {:?}", e.to_string());
+                tracing::error!("auth error: {:?}", e.to_string());
                 StatusCode::INTERNAL_SERVER_ERROR
             }
         }
@@ -665,13 +665,13 @@ impl ServerSession {
             }
         };
 
-        log::info!(
+        tracing::info!(
             "[ S<-C ] [publish]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name
         );
 
-        log::info!(
+        tracing::info!(
             "[ S->C ] [stream begin]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name
@@ -689,7 +689,7 @@ impl ServerSession {
                 &"".to_string(),
             )
             .await?;
-        log::info!(
+        tracing::info!(
             "[ S->C ] [NetStream.Publish.Start]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name
@@ -699,7 +699,7 @@ impl ServerSession {
         if webhook_config.enabled {
             let status = self.auth(&webhook_config.publish_url).await;
             if !status.is_success() {
-                log::info!(
+                tracing::info!(
                     "[ S->C ] [publish failed]  app_name: {}, stream_name: {}",
                     self.app_name,
                     self.stream_name
@@ -709,7 +709,7 @@ impl ServerSession {
                 });
             }
         }
-        log::info!(
+        tracing::info!(
             "[ S->C ] [publish success]  app_name: {}, stream_name: {}",
             self.app_name,
             self.stream_name

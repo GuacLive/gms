@@ -72,7 +72,7 @@ impl HttpFlv {
         loop {
             if let Some(data) = self.data_consumer.recv().await {
                 if let Err(err) = self.write_flv_tag(data) {
-                    log::error!("write_flv_tag err: {}", err);
+                    tracing::error!("write_flv_tag err: {}", err);
                     retry_count += 1;
                 } else {
                     retry_count = 0;
@@ -148,7 +148,7 @@ impl HttpFlv {
             session_info,
         };
         if let Err(err) = self.event_producer.send(subscribe_event) {
-            log::error!("unsubscribe_from_channels err {}\n", err);
+            tracing::error!("unsubscribe_from_channels err {}\n", err);
         }
 
         Ok(())

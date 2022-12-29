@@ -96,7 +96,7 @@ impl ChunkUnpacketizer {
 
     pub fn extend_data(&mut self, data: &[u8]) {
         self.reader.extend_from_slice(data);
-        log::trace!(
+        tracing::trace!(
             "extend_data length: {}: content:{:X?}",
             self.reader.len(),
             self.reader
@@ -107,18 +107,18 @@ impl ChunkUnpacketizer {
     }
 
     pub fn update_max_chunk_size(&mut self, chunk_size: usize) {
-        log::trace!("update max chunk size: {}", chunk_size);
+        tracing::trace!("update max chunk size: {}", chunk_size);
         self.max_chunk_size = chunk_size;
     }
 
     pub fn read_chunks(&mut self) -> Result<UnpackResult, UnpackError> {
-        log::trace!(
+        tracing::trace!(
             "read chunks begin, current time: {}, and read state: {}",
             Local::now().timestamp_nanos(),
             f(&self.chunk_read_state)
         );
 
-        // log::trace!(
+        // tracing::trace!(
         //     "read chunks, reader remaining data: {}",
         //     self.reader.get_remaining_bytes()
         // );
@@ -143,7 +143,7 @@ impl ChunkUnpacketizer {
             }
         }
 
-        log::trace!(
+        tracing::trace!(
             "read chunks end, current time: {}, and read state: {}",
             Local::now().timestamp_nanos(),
             f(&self.chunk_read_state)
@@ -169,7 +169,7 @@ impl ChunkUnpacketizer {
     pub fn read_chunk(&mut self) -> Result<UnpackResult, UnpackError> {
         let mut result: UnpackResult = UnpackResult::Empty;
 
-        log::trace!(
+        tracing::trace!(
             "read chunk begin, current time: {}, and read state: {}, and chunk index: {}",
             Local::now().timestamp_nanos(),
             f(&self.chunk_read_state),
@@ -191,7 +191,7 @@ impl ChunkUnpacketizer {
             };
         }
 
-        log::trace!(
+        tracing::trace!(
             "read chunk end, current time: {}, and read state: {}, and chunk index: {}",
             Local::now().timestamp_nanos(),
             f(&self.chunk_read_state),
@@ -203,7 +203,7 @@ impl ChunkUnpacketizer {
     }
 
     pub fn print_current_basic_header(&mut self) {
-        log::trace!(
+        tracing::trace!(
             "print_current_basic_header, format id: {},csid: {}",
             self.current_chunk_info.basic_header.chunk_stream_id,
             self.current_chunk_info.basic_header.format
@@ -282,7 +282,7 @@ impl ChunkUnpacketizer {
 
         //todo
         if csid != self.current_chunk_info.basic_header.chunk_stream_id {
-            log::trace!(
+            tracing::trace!(
                 "read_basic_header, chunk stream id update, new: {}, old:{}",
                 csid,
                 self.current_chunk_info.basic_header.chunk_stream_id
@@ -310,7 +310,7 @@ impl ChunkUnpacketizer {
     }
 
     fn print_current_message_header(&self, state: ChunkReadState) {
-        log::trace!(
+        tracing::trace!(
             "print_current_basic_header state {}, timestamp:{}, timestamp delta:{}, msg length: {},msg type id: {}, msg stream id:{}",
             state,
             self.current_chunk_info.message_header.timestamp,
@@ -322,7 +322,7 @@ impl ChunkUnpacketizer {
     }
 
     pub fn read_message_header(&mut self) -> Result<UnpackResult, UnpackError> {
-        log::trace!(
+        tracing::trace!(
             "read_message_header, left bytes length: {}",
             self.reader.len(),
         );
@@ -353,7 +353,7 @@ impl ChunkUnpacketizer {
                             self.current_message_header().msg_length =
                                 self.reader.read_u24::<BigEndian>()?;
 
-                            log::trace!(
+                            tracing::trace!(
                                 "read_message_header format 0, msg_length: {}",
                                 self.current_message_header().msg_length,
                             );
@@ -362,7 +362,7 @@ impl ChunkUnpacketizer {
                         MessageHeaderReadState::ReadMsgTypeID => {
                             self.current_message_header().msg_type_id = self.reader.read_u8()?;
 
-                            log::trace!(
+                            tracing::trace!(
                                 "read_message_header format 0, msg_type_id: {}",
                                 self.current_message_header().msg_type_id
                             );
@@ -404,7 +404,7 @@ impl ChunkUnpacketizer {
                             self.current_message_header().msg_length =
                                 self.reader.read_u24::<BigEndian>()?;
 
-                            log::trace!(
+                            tracing::trace!(
                                 "read_message_header format 1, msg_length: {}",
                                 self.current_message_header().msg_length
                             );
@@ -413,7 +413,7 @@ impl ChunkUnpacketizer {
                         MessageHeaderReadState::ReadMsgTypeID => {
                             self.current_message_header().msg_type_id = self.reader.read_u8()?;
 
-                            log::trace!(
+                            tracing::trace!(
                                 "read_message_header format 1, msg_type_id: {}",
                                 self.current_message_header().msg_type_id
                             );
@@ -421,7 +421,7 @@ impl ChunkUnpacketizer {
                             break;
                         }
                         _ => {
-                            log::error!("error happend when read chunk message header");
+                            tracing::error!("error happend when read chunk message header");
                             break;
                         }
                     }
@@ -441,7 +441,7 @@ impl ChunkUnpacketizer {
             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
             ***************************************************/
             2 => {
-                log::trace!(
+                tracing::trace!(
                     "read_message_header format 2, msg_type_id: {}",
                     self.current_message_header().msg_type_id
                 );
@@ -523,7 +523,7 @@ impl ChunkUnpacketizer {
             .checked_sub(self.current_chunk_info.payload.len())
             .ok_or(UnpackErrorValue::MalformedInput)?;
 
-        log::trace!(
+        tracing::trace!(
             "read_message_payload whole msg length: {} and remaining bytes: {}",
             whole_msg_length,
             remaining_bytes
@@ -540,14 +540,14 @@ impl ChunkUnpacketizer {
             self.current_chunk_info.payload.reserve(additional);
         }
 
-        log::trace!("read_message_payload buffer len:{}", self.reader.len());
+        tracing::trace!("read_message_payload buffer len:{}", self.reader.len());
 
         let payload_data = self.reader.read_bytes(need_read_length)?;
         self.current_chunk_info
             .payload
             .extend_from_slice(&payload_data[..]);
 
-        log::trace!(
+        tracing::trace!(
             "read_message_payload current msg payload len:{}",
             self.current_chunk_info.payload.len()
         );

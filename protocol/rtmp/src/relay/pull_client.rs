@@ -35,7 +35,7 @@ impl PullClient {
                     app_name,
                     stream_name,
                 } => {
-                    log::info!(
+                    tracing::info!(
                         "receive pull event, app_name :{}, stream_name: {}",
                         app_name,
                         stream_name
@@ -52,7 +52,7 @@ impl PullClient {
 
                     tokio::spawn(async move {
                         if let Err(err) = client_session.run().await {
-                            log::error!("client_session as pull client run error: {}", err);
+                            tracing::error!("client_session as pull client run error: {}", err);
                         }
                     });
                 }

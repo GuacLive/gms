@@ -50,14 +50,14 @@ impl SimpleHandshakeServer {
         loop {
             match self.state {
                 ServerHandshakeState::ReadC0C1 => {
-                    log::info!("[ S<-C ] [simple handshake] read C0C1");
+                    tracing::info!("[ S<-C ] [simple handshake] read C0C1");
                     self.read_c0()?;
                     self.read_c1()?;
                     self.state = ServerHandshakeState::WriteS0S1S2;
                 }
 
                 ServerHandshakeState::WriteS0S1S2 => {
-                    log::info!("[ S->C ] [simple handshake] write S0S1S2");
+                    tracing::info!("[ S->C ] [simple handshake] write S0S1S2");
                     self.write_s0()?;
                     self.write_s1()?;
                     self.write_s2()?;
@@ -67,13 +67,13 @@ impl SimpleHandshakeServer {
                 }
 
                 ServerHandshakeState::ReadC2 => {
-                    log::info!("[ S<-C ] [simple handshake] read C2");
+                    tracing::info!("[ S<-C ] [simple handshake] read C2");
                     self.read_c2()?;
                     self.state = ServerHandshakeState::Finish;
                 }
 
                 ServerHandshakeState::Finish => {
-                    log::info!("simple handshake successfully..");
+                    tracing::info!("simple handshake successfully..");
                     break;
                 }
             }
@@ -103,31 +103,31 @@ impl ComplexHandshakeServer {
         loop {
             match self.state {
                 ServerHandshakeState::ReadC0C1 => {
-                    log::info!("[ S<-C ] [complex handshake] read C0C1");
+                    tracing::info!("[ S<-C ] [complex handshake] read C0C1");
                     self.read_c0()?;
                     self.read_c1()?;
                     self.state = ServerHandshakeState::WriteS0S1S2;
                 }
 
                 ServerHandshakeState::WriteS0S1S2 => {
-                    log::info!("[ S->C ] [complex handshake] write S0S1S2");
+                    tracing::info!("[ S->C ] [complex handshake] write S0S1S2");
                     self.write_s0()?;
                     self.write_s1()?;
                     self.write_s2()?;
                     self.writer.flush().await?;
-                    log::info!("[ S->C ] [complex handshake] write S0S1S2 finish");
+                    tracing::info!("[ S->C ] [complex handshake] write S0S1S2 finish");
                     self.state = ServerHandshakeState::ReadC2;
                     break;
                 }
 
                 ServerHandshakeState::ReadC2 => {
-                    log::info!("[ S<-C ] [complex handshake] read C2");
+                    tracing::info!("[ S<-C ] [complex handshake] read C2");
                     self.read_c2()?;
                     self.state = ServerHandshakeState::Finish;
                 }
 
                 ServerHandshakeState::Finish => {
-                    log::info!("complex handshake successfully..");
+                    tracing::info!("complex handshake successfully..");
                     break;
                 }
             }
@@ -317,7 +317,7 @@ impl HandshakeServer {
                         //println!("Complex handshake is successfully!!")
                     }
                     Err(err) => {
-                        log::warn!("complex handshake failed.. err:{}", err);
+                        tracing::warn!("complex handshake failed.. err:{}", err);
                         self.is_complex = false;
                         let data = self.saved_data.clone();
                         self.extend_data(&data[..]);

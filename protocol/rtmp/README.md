@@ -22,7 +22,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
         let mut rtmp_server = RtmpServer::new(address, producer.clone());
         tokio::spawn(async move {
             if let Err(err) = rtmp_server.run().await {
-                log::error!("rtmp server error: {}\n", err);
+                tracing::error!("rtmp server error: {}\n", err);
             }
         });
 
@@ -59,7 +59,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
         );
         tokio::spawn(async move {
             if let Err(err) = push_client.run().await {
-                log::error!("push client error {}\n", err);
+                tracing::error!("push client error {}\n", err);
             }
         });
         channel.set_rtmp_push_enabled(true);
@@ -70,7 +70,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
                   ip = "192.168.0.3",
                   port = pull_cfg_value.port
               );
-        log::info!("start rtmp pull client from address: {}", address);
+        tracing::info!("start rtmp pull client from address: {}", address);
         let mut pull_client = PullClient::new(
             address,
             channel.get_client_event_consumer(),
@@ -78,7 +78,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
 
         tokio::spawn(async move {
             if let Err(err) = pull_client.run().await {
-                log::error!("pull client error {}\n", err);
+                tracing::error!("pull client error {}\n", err);
             }
         });
         channel.set_rtmp_pull_enabled(true);
@@ -91,7 +91,7 @@ This is a simple rtmp library for easy use and reading, you can build your own s
         let mut rtmp_server = RtmpServer::new(address, producer.clone());
         tokio::spawn(async move {
             if let Err(err) = rtmp_server.run().await {
-                log::error!("rtmp server error: {}\n", err);
+                tracing::error!("rtmp server error: {}\n", err);
             }
         });
 

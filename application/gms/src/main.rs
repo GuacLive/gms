@@ -2,7 +2,6 @@ use {
     //https://rustcc.cn/article?id=6dcbf032-0483-4980-8bfe-c64a7dfb33c7
     anyhow::Result,
     gms::config::{config, config::Config},
-    //env_logger::{Builder, Target},
     hls::server as hls_server,
     httpflv::server as httpflv_server,
 
@@ -12,22 +11,19 @@ use {
         rtmp::RtmpServer,
     },
     std::env,
-    tokio,
     tokio::signal,
 };
 
-//use application::logger::logger;
 use hls::hls_event_manager::HlsEventManager;
 use hls::rtmp_event_processor::RtmpEventProcessor;
 
 #[tokio::main]
 
 async fn main() -> Result<()> {
-    env_logger::init();
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
-        log::error!("please input config file path");
+        tracing::error!("please input config file path");
         return Ok(());
     }
 
@@ -43,12 +39,14 @@ async fn main() -> Result<()> {
                 env::set_var("RUST_LOG", "info");
             }
 
+            // install global collector configured based on RUST_LOG env var.
+            tracing_subscriber::fmt::init();
             /*run the service*/
             let mut service = Service::new(val);
             service.run().await?;
         }
         Err(_) => {
-            log::error!("load config file failed")
+            tracing::error!("load config file failed")
         }
     }
 
@@ -93,7 +91,7 @@ impl Service {
                     if !push_value.enabled {
                         continue;
                     }
-                    log::info!("start rtmp push client..");
+                    tracing::info!("start rtmp push client..");
                     let address = format!(
                         "{ip}:{port}",
                         ip = push_value.address,
@@ -107,7 +105,7 @@ impl Service {
                     );
                     tokio::spawn(async move {
                         if let Err(err) = push_client.run().await {
-                            log::error!("push client error {}\n", err);
+                            tracing::error!("push client error {}\n", err);
                         }
                     });
 
@@ -122,7 +120,7 @@ impl Service {
                         ip = pull_cfg_value.address,
                         port = pull_cfg_value.port
                     );
-                    log::info!("start rtmp pull client from address: {}", address);
+                    tracing::info!("start rtmp pull client from address: {}", address);
                     let mut pull_client = PullClient::new(
                         address,
                         channel.get_client_event_consumer(),
@@ -131,7 +129,7 @@ impl Service {
 
                     tokio::spawn(async move {
                         if let Err(err) = pull_client.run().await {
-                            log::error!("pull client error {}\n", err);
+                            tracing::error!("pull client error {}\n", err);
                         }
                     });
 
@@ -149,7 +147,7 @@ impl Service {
                 tokio::spawn(async move {
                     if let Err(err) = rtmp_server.run().await {
                         //print!("rtmp server  error {}\n", err);
-                        log::error!("rtmp server error: {}\n", err);
+                        tracing::error!("rtmp server error: {}\n", err);
                     }
                 });
             }
@@ -171,7 +169,7 @@ impl Service {
             tokio::spawn(async move {
                 if let Err(err) = httpflv_server::run(event_producer, port).await {
                     //print!("push client error {}\n", err);
-                    log::error!("httpflv server error: {}\n", err);
+                    tracing::error!("httpflv server error: {}\n", err);
                 }
             });
         }
@@ -198,7 +196,7 @@ impl Service {
             tokio::spawn(async move {
                 if let Err(err) = rtmp_event_processor.run().await {
                     // print!("push client error {}\n", err);
-                    log::error!("rtmp event processor error: {}\n", err);
+                    tracing::error!("rtmp event processor error: {}\n", err);
                 }
             });
 
@@ -206,7 +204,7 @@ impl Service {
 
             tokio::spawn(async move {
                 if let Err(err) = hls_server::run(port, hls_manager).await {
-                    log::error!("hls server error: {}\n", err);
+                    tracing::error!("hls server error: {}\n", err);
                 }
             });
             channel.set_hls_enabled(true);

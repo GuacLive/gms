@@ -69,7 +69,7 @@ impl RtmpEventProcessor {
                     });
                 }
                 _ => {
-                    log::trace!("other infos...");
+                    tracing::trace!("other infos...");
                 }
             }
         }

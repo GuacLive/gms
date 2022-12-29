@@ -19,9 +19,7 @@ pub struct MessageParser {
 
 impl MessageParser {
     pub fn new(chunk_info: ChunkInfo) -> Self {
-        Self {
-            chunk_info,
-        }
+        Self { chunk_info }
     }
     pub fn parse(self) -> Result<RtmpMessageData, MessageError> {
         let mut reader = BytesReader::new(self.chunk_info.payload);
@@ -38,7 +36,7 @@ impl MessageParser {
 
                 // match command_name.clone() {
                 //     Amf0ValueType::UTF8String(val) => {
-                //         log::info!("command_name:{}", val);
+                //         tracing::info!("command_name:{}", val);
                 //     }
                 //     _ => {}
                 // }
@@ -61,7 +59,7 @@ impl MessageParser {
             }
 
             msg_type_id::AUDIO => {
-                log::trace!(
+                tracing::trace!(
                     "receive audio msg , msg length is{}\n",
                     self.chunk_info.message_header.msg_length
                 );
@@ -71,7 +69,7 @@ impl MessageParser {
                 });
             }
             msg_type_id::VIDEO => {
-                log::trace!(
+                tracing::trace!(
                     "receive video msg , msg length is{}\n",
                     self.chunk_info.message_header.msg_length
                 );
@@ -80,7 +78,7 @@ impl MessageParser {
                 });
             }
             msg_type_id::USER_CONTROL_EVENT => {
-                log::trace!(
+                tracing::trace!(
                     "receive user control event msg , msg length is{}\n",
                     self.chunk_info.message_header.msg_length
                 );
@@ -89,23 +87,17 @@ impl MessageParser {
             }
             msg_type_id::SET_CHUNK_SIZE => {
                 let chunk_size = ProtocolControlMessageReader::new(reader).read_set_chunk_size()?;
-                return Ok(RtmpMessageData::SetChunkSize {
-                    chunk_size,
-                });
+                return Ok(RtmpMessageData::SetChunkSize { chunk_size });
             }
             msg_type_id::ABORT => {
                 let chunk_stream_id =
                     ProtocolControlMessageReader::new(reader).read_abort_message()?;
-                return Ok(RtmpMessageData::AbortMessage {
-                    chunk_stream_id,
-                });
+                return Ok(RtmpMessageData::AbortMessage { chunk_stream_id });
             }
             msg_type_id::ACKNOWLEDGEMENT => {
                 let sequence_number =
                     ProtocolControlMessageReader::new(reader).read_acknowledgement()?;
-                return Ok(RtmpMessageData::Acknowledgement {
-                    sequence_number,
-                });
+                return Ok(RtmpMessageData::Acknowledgement { sequence_number });
             }
             msg_type_id::WIN_ACKNOWLEDGEMENT_SIZE => {
                 let size =
@@ -115,9 +107,7 @@ impl MessageParser {
             msg_type_id::SET_PEER_BANDWIDTH => {
                 let properties =
                     ProtocolControlMessageReader::new(reader).read_set_peer_bandwidth()?;
-                return Ok(RtmpMessageData::SetPeerBandwidth {
-                    properties,
-                });
+                return Ok(RtmpMessageData::SetPeerBandwidth { properties });
             }
             msg_type_id::DATA_AMF0 | msg_type_id::DATA_AMF3 => {
                 //let values = Amf0Reader::new(reader).read_all()?;

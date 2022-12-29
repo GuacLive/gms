@@ -37,7 +37,7 @@ async fn handle_connection(
 
             tokio::spawn(async move {
                 if let Err(err) = flv_hanlder.run().await {
-                    log::error!("flv handler run error {}\n", err);
+                    tracing::error!("flv handler run error {}\n", err);
                 }
             });
 
@@ -70,7 +70,7 @@ pub async fn run(event_producer: ChannelEventProducer, port: u32) -> Result<()> 
 
     let server = Server::bind(&sock_addr).serve(new_service);
 
-    log::info!("Httpflv server listening on http://{}", sock_addr);
+    tracing::info!("Httpflv server listening on http://{}", sock_addr);
 
     server.await?;
 

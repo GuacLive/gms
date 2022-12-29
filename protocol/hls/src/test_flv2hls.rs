@@ -95,7 +95,7 @@ mod tests {
 
                 Err(err) => {
                     media_demuxer.flush_remaining_data()?;
-                    log::error!("readd err: {}", err);
+                    tracing::error!("readd err: {}", err);
                     break;
                 }
             }

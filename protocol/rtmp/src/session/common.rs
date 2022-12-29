@@ -75,7 +75,7 @@ impl Common {
                 }
             } else {
                 retry_times += 1;
-                log::debug!(
+                tracing::debug!(
                     "send_channel_data: no data receives ,retry {} times!",
                     retry_times
                 );
@@ -153,7 +153,7 @@ impl Common {
         match self.data_producer.send(data) {
             Ok(_) => {}
             Err(err) => {
-                log::error!("send video err: {}", err);
+                tracing::error!("send video err: {}", err);
                 return Err(SessionError {
                     value: SessionErrorValue::SendChannelDataErr,
                 });
@@ -176,7 +176,7 @@ impl Common {
         match self.data_producer.send(data) {
             Ok(_) => {}
             Err(err) => {
-                log::error!("receive audio err {}\n", err);
+                tracing::error!("receive audio err {}\n", err);
                 return Err(SessionError {
                     value: SessionErrorValue::SendChannelDataErr,
                 });
@@ -228,7 +228,7 @@ impl Common {
         stream_name: String,
         sub_id: Uuid,
     ) -> Result<(), SessionError> {
-        log::info!(
+        tracing::info!(
             "subscribe_from_channels, app_name: {} stream_name: {} subscribe_id: {}",
             app_name,
             stream_name.clone(),
@@ -289,7 +289,7 @@ impl Common {
             session_info: self.get_session_info(sub_id),
         };
         if let Err(err) = self.event_producer.send(subscribe_event) {
-            log::error!("unsubscribe_from_channels err {}\n", err);
+            tracing::error!("unsubscribe_from_channels err {}\n", err);
         }
 
         Ok(())
@@ -323,7 +323,7 @@ impl Common {
                 self.data_producer = producer;
             }
             Err(err) => {
-                log::error!("publish_to_channels err{}\n", err);
+                tracing::error!("publish_to_channels err{}\n", err);
             }
         }
         Ok(())
@@ -342,7 +342,7 @@ impl Common {
         let rv = self.event_producer.send(unpublish_event);
         match rv {
             Err(_) => {
-                log::error!(
+                tracing::error!(
                     "unpublish_to_channels error.app_name: {}, stream_name: {}",
                     app_name,
                     stream_name
@@ -352,7 +352,7 @@ impl Common {
                 });
             }
             _ => {
-                log::info!(
+                tracing::info!(
                     "unpublish_to_channels successfully.app_name: {}, stream_name: {}",
                     app_name,
                     stream_name
