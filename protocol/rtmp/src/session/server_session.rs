@@ -438,7 +438,20 @@ impl ServerSession {
             )
             .await?;
 
-        //self.unsubscribe_from_channels().await?;
+        let webhook_config = self.webhook_config.clone();
+        if webhook_config.enabled {
+            let status = self.auth(&webhook_config.publish_done_url).await;
+            if !status.is_success() {
+                log::info!(
+                    "[ S->C ] [delete stream failed]  app_name: {}, stream_name: {}",
+                    self.app_name,
+                    self.stream_name
+                );
+                return Err(SessionError {
+                    value: SessionErrorValue::Finish,
+                });
+            }
+        }
         log::info!(
             "[ S->C ] [delete stream success]  app_name: {}, stream_name: {}",
             self.app_name,
@@ -572,10 +585,9 @@ impl ServerSession {
         Ok(())
     }
 
-    pub async fn auth(&mut self) -> StatusCode {
+    pub async fn auth(&mut self, url: &str) -> StatusCode {
         let stream_key = self.stream_name.clone();
         let app_name = self.app_name.clone();
-        let url = self.webhook_config.clone().publish_url;
         let client = Client::new();
         let req = Request::builder()
             .method(Method::POST)
@@ -658,7 +670,7 @@ impl ServerSession {
 
         let webhook_config = self.webhook_config.clone();
         if webhook_config.enabled {
-            let status = self.auth().await;
+            let status = self.auth(&webhook_config.publish_url).await;
             if !status.is_success() {
                 log::info!(
                     "[ S->C ] [publish failed]  app_name: {}, stream_name: {}",
