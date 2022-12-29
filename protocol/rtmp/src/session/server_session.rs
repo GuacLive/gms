@@ -602,7 +602,17 @@ impl ServerSession {
         let future = client.request(req);
         let response = future.await;
 
-        response.unwrap().status()
+        match response {
+            Ok(res) => {
+                let status = res.status();
+                log::info!("auth status: {:?}", status);
+                status
+            }
+            Err(e) => {
+                log::error!("auth error: {:?}", e.to_string());
+                StatusCode::INTERNAL_SERVER_ERROR
+            }
+        }
     }
     pub async fn on_publish(
         &mut self,
