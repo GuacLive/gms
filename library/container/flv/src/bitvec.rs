@@ -28,7 +28,7 @@ impl Mpeg4BitVec {
 
     pub fn extend_from_bytesmut(&mut self, data: BytesMut) {
         for ele in data {
-            let bit = BitSlice::<Msb0, _>::from_element(&ele);
+            let bit = BitSlice::<_, Msb0>::from_element(&ele);
             self.data.extend_from_bitslice(bit);
         }
     }
@@ -136,12 +136,12 @@ mod tests {
     #[test]
     fn test_bit_vec() {
         let data_0 = 2u8;
-        let bits_0 = BitSlice::<Msb0, _>::from_element(&data_0);
+        let bits_0 = BitSlice::<_, Msb0>::from_element(&data_0);
 
         let data_1 = 7u8;
-        let bits_1 = BitSlice::<Msb0, _>::from_element(&data_1);
+        let bits_1 = BitSlice::<_, Msb0>::from_element(&data_1);
 
-        let mut bit_vec: BitVec<Msb0> = BitVec::new();
+        let mut bit_vec: BitVec<u8, Msb0> = BitVec::new();
 
         bit_vec.extend_from_bitslice(bits_0);
         bit_vec.extend_from_bitslice(bits_1);
