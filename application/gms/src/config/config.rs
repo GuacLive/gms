@@ -80,11 +80,8 @@ fn test_toml_parse() {
             let decoded: Config = toml::from_str(&val[..]).unwrap();
 
             let rtmp = decoded.rtmp;
-            match rtmp {
-                Some(val) => {
-                    println!("++++++{}\n", val.enabled);
-                }
-                None => {}
+            if let Some(val) = rtmp {
+                println!("++++++{}\n", val.enabled);
             }
         }
         Err(err) => println!("======{}", err),

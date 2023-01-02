@@ -115,6 +115,12 @@ pub struct FlvVideoTagDemuxer {
     avc_processor: Mpeg4AvcProcessor,
 }
 
+impl Default for FlvVideoTagDemuxer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FlvVideoTagDemuxer {
     pub fn new() -> Self {
         Self {
@@ -133,31 +139,27 @@ impl FlvVideoTagDemuxer {
 
         self.avc_processor.extend_data(remaining_bytes);
 
-        match header.codec_id {
-            codec_id::FLV_VIDEO_H264 => match header.avc_packet_type {
-                avc_packet_type::AVC_SEQHDR => {
-                    self.avc_processor.decoder_configuration_record_load()?;
-                    return Ok(FlvDemuxerVideoData::default());
-                }
-                avc_packet_type::AVC_NALU => {
-                    self.avc_processor.h264_mp4toannexb()?;
+        if header.codec_id == codec_id::FLV_VIDEO_H264 { match header.avc_packet_type {
+            avc_packet_type::AVC_SEQHDR => {
+                self.avc_processor.decoder_configuration_record_load()?;
+                return Ok(FlvDemuxerVideoData::default());
+            }
+            avc_packet_type::AVC_NALU => {
+                self.avc_processor.h264_mp4toannexb()?;
 
-                    let video_data = FlvDemuxerVideoData {
-                        has_data: true,
-                        codec_id: codec_id::FLV_VIDEO_H264,
-                        pts: timestamp as i64 + cts as i64,
-                        dts: timestamp as i64,
-                        frame_type: header.frame_type,
-                        data: self.avc_processor.bytes_writer.extract_current_bytes(),
-                    };
-                    //print!("flv demux video payload length {}\n", video_data.data.len());
-                    return Ok(video_data);
-                }
-                _ => {}
-            },
-
+                let video_data = FlvDemuxerVideoData {
+                    has_data: true,
+                    codec_id: codec_id::FLV_VIDEO_H264,
+                    pts: timestamp as i64 + cts as i64,
+                    dts: timestamp as i64,
+                    frame_type: header.frame_type,
+                    data: self.avc_processor.bytes_writer.extract_current_bytes(),
+                };
+                //print!("flv demux video payload length {}\n", video_data.data.len());
+                return Ok(video_data);
+            }
             _ => {}
-        }
+        } }
 
         Ok(FlvDemuxerVideoData::default())
     }
@@ -165,6 +167,12 @@ impl FlvVideoTagDemuxer {
 
 pub struct FlvAudioTagDemuxer {
     aac_processor: Mpeg4AacProcessor,
+}
+
+impl Default for FlvAudioTagDemuxer {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl FlvAudioTagDemuxer {
@@ -185,29 +193,26 @@ impl FlvAudioTagDemuxer {
 
         self.aac_processor.extend_data(remaining_bytes);
 
-        match header.sound_format {
-            sound_format::AAC => match header.aac_packet_type {
-                aac_packet_type::AAC_SEQHDR => {
-                    self.aac_processor.audio_specific_config_load()?;
-                    return Ok(FlvDemuxerAudioData::default());
-                }
-                aac_packet_type::AAC_RAW => {
-                    self.aac_processor.adts_save()?;
+        if header.sound_format == sound_format::AAC { match header.aac_packet_type {
+            aac_packet_type::AAC_SEQHDR => {
+                self.aac_processor.audio_specific_config_load()?;
+                return Ok(FlvDemuxerAudioData::default());
+            }
+            aac_packet_type::AAC_RAW => {
+                self.aac_processor.adts_save()?;
 
-                    let audio_data = FlvDemuxerAudioData {
-                        has_data: true,
-                        sound_format: header.sound_format,
-                        pts: timestamp as i64,
-                        dts: timestamp as i64,
-                        data: self.aac_processor.bytes_writer.extract_current_bytes(),
-                    };
-                    //print!("flv demux audio payload length {}\n", audio_data.data.len());
-                    return Ok(audio_data);
-                }
-                _ => {}
-            },
+                let audio_data = FlvDemuxerAudioData {
+                    has_data: true,
+                    sound_format: header.sound_format,
+                    pts: timestamp as i64,
+                    dts: timestamp as i64,
+                    data: self.aac_processor.bytes_writer.extract_current_bytes(),
+                };
+                //print!("flv demux audio payload length {}\n", audio_data.data.len());
+                return Ok(audio_data);
+            }
             _ => {}
-        }
+        } }
         Ok(FlvDemuxerAudioData::default())
     }
 }

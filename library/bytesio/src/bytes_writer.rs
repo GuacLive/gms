@@ -15,6 +15,12 @@ pub struct BytesWriter {
     pub bytes: Vec<u8>,
 }
 
+impl Default for BytesWriter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BytesWriter {
     pub fn new() -> Self {
         Self { bytes: Vec::new() }
@@ -242,11 +248,8 @@ mod tests {
 
         let rv = v.write(&FLV_HEADER);
 
-        match rv {
-            Ok(val) => {
-                print!("{} ", val);
-            }
-            _ => {}
+        if let Ok(val) = rv {
+            print!("{} ", val);
         }
 
         assert_eq!(10, v.len());

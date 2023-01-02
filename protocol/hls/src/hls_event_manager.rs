@@ -45,6 +45,12 @@ pub struct HlsEventManager {
     pub stream_to_producer: StpMap,
 }
 
+impl Default for HlsEventManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HlsEventManager {
     pub fn new() -> HlsEventManager {
         HlsEventManager {

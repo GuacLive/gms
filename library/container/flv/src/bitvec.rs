@@ -16,6 +16,12 @@ pub struct Mpeg4BitVec {
     pub write_offset: usize,
 }
 
+impl Default for Mpeg4BitVec {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Mpeg4BitVec {
     pub fn new() -> Self {
         Self {

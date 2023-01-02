@@ -64,11 +64,8 @@ pub fn print(data: BytesMut) {
     for i in data {
         print!("{:02X} ", i);
         idx += 1;
-        match idx % 16 {
-            0 => {
-                println!()
-            }
-            _ => {}
+        if idx % 16 == 0 {
+            println!()
         }
     }
 
@@ -102,6 +99,12 @@ pub struct Mpeg4AvcProcessor {
     pub bytes_reader: BytesReader,
     pub bytes_writer: BytesWriter,
     pub mpeg4_avc: Mpeg4Avc,
+}
+
+impl Default for Mpeg4AvcProcessor {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Mpeg4AvcProcessor {

@@ -82,17 +82,17 @@ impl FlvDataReceiver {
 
         loop {
             if let Some(data) = self.data_consumer.recv().await {
-                let flv_data: FlvData;
+                
 
-                match data {
+                let flv_data: FlvData = match data {
                     ChannelData::Audio { timestamp, data } => {
-                        flv_data = FlvData::Audio { timestamp, data };
+                        FlvData::Audio { timestamp, data }
                     }
                     ChannelData::Video { timestamp, data } => {
-                        flv_data = FlvData::Video { timestamp, data };
+                        FlvData::Video { timestamp, data }
                     }
                     _ => continue,
-                }
+                };
                 retry_count = 0;
                 self.media_processor.process_flv_data(flv_data)?;
             } else {
@@ -139,16 +139,13 @@ impl FlvDataReceiver {
             };
 
             let rv = self.event_producer.send(subscribe_event);
-            match rv {
-                Err(_) => {
-                    let session_error = SessionError {
-                        value: SessionErrorValue::SendChannelDataErr,
-                    };
-                    return Err(HlsError {
-                        value: HlsErrorValue::SessionError(session_error),
-                    });
-                }
-                _ => {}
+            if rv.is_err() {
+                let session_error = SessionError {
+                    value: SessionErrorValue::SendChannelDataErr,
+                };
+                return Err(HlsError {
+                    value: HlsErrorValue::SessionError(session_error),
+                });
             }
 
             match receiver.await {

@@ -67,6 +67,12 @@ pub struct Mpeg4AacProcessor {
     pub mpeg4_aac: Mpeg4Aac,
 }
 //https://blog.csdn.net/coloriy/article/details/90511746
+impl Default for Mpeg4AacProcessor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Mpeg4AacProcessor {
     pub fn new() -> Self {
         Self {
