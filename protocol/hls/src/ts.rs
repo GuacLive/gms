@@ -14,7 +14,7 @@ pub struct Ts {
 
 impl Ts {
     pub fn new(app_name: String, stream_name: String) -> Self {
-        let folder_name = format!("./{}/{}", app_name, stream_name);
+        let folder_name = format!("./{app_name}/{stream_name}");
         fs::create_dir_all(folder_name.clone()).unwrap();
 
         Self {
@@ -36,7 +36,7 @@ impl Ts {
             (*ts_number).clone(),
             if partial {
                 *pts_number += 1;
-                format!(".{}", pts_number)
+                format!(".{pts_number}")
             } else {
                 *pts_number = 0;
 

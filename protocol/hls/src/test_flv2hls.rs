@@ -18,7 +18,7 @@ mod tests {
         println!("==========={}", data.len());
         let mut idx = 0;
         for i in data {
-            print!("{:02X} ", i);
+            print!("{i:02X} ");
             idx += 1;
             if idx % 16 == 0 {
                 println!()
@@ -32,14 +32,14 @@ mod tests {
         match data {
             FlvData::Audio { timestamp, data } => {
                 println! {"==audio data begin=="};
-                println! {"timestamp: {}",timestamp};
+                println! {"timestamp: {timestamp}"};
                 println! {"data :"};
                 print(data);
                 println! {"==audio data end=="};
             }
             FlvData::Video { timestamp, data } => {
                 println! {"==video data begin=="};
-                println! {"timestamp: {}",timestamp};
+                println! {"timestamp: {timestamp}"};
                 println! {"data :"};
                 print(data);
                 println! {"==video data end=="};
@@ -99,7 +99,7 @@ mod tests {
         }
 
         let elapsed = start.elapsed();
-        println!("Debug: {:?}", elapsed);
+        println!("Debug: {elapsed:?}");
 
         Ok(())
     }

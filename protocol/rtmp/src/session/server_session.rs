@@ -611,8 +611,7 @@ impl ServerSession {
             .uri(url)
             .header("Content-Type", "application/json")
             .body(Body::from(format!(
-                r#"{{"app_name":"{}","stream_key":"{}"}}"#,
-                app_name, stream_key
+                r#"{{"app_name":"{app_name}","stream_key":"{stream_key}"}}"#
             )))
             .expect("request body");
 

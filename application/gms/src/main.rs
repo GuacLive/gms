@@ -138,7 +138,7 @@ impl Service {
             }
 
             let listen_port = rtmp_cfg_value.port;
-            let address = format!("0.0.0.0:{port}", port = listen_port);
+            let address = format!("0.0.0.0:{listen_port}");
 
             /*static pull*/
             if let Some(webhooks_cfg_value) = &rtmp_cfg_value.webhooks {

@@ -157,7 +157,7 @@ mod tests {
             if ele {
                 v = 1;
             }
-            print!("{} ", v);
+            print!("{v} ");
         }
 
         println!();
@@ -169,7 +169,7 @@ mod tests {
             if ele {
                 v = 1;
             }
-            print!("{} ", v);
+            print!("{v} ");
         }
     }
     #[test]

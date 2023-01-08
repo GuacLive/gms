@@ -76,7 +76,7 @@ fn test_toml_parse() {
 
     match str {
         Ok(val) => {
-            println!("++++++{}\n", val);
+            println!("++++++{val}\n");
             let decoded: Config = toml::from_str(&val[..]).unwrap();
 
             let rtmp = decoded.rtmp;
@@ -84,6 +84,6 @@ fn test_toml_parse() {
                 println!("++++++{}\n", val.enabled);
             }
         }
-        Err(err) => println!("======{}", err),
+        Err(err) => println!("======{err}"),
     }
 }
