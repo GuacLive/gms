@@ -2,7 +2,7 @@
 name = "bytesio"
 version = "0.1.27"
 authors = ["HarlanC <wawacry@qq.com>"]
-edition = "2018"
+edition = "2021"
 description = "a network io library using tokio."
 license = "MIT"
 repository = "https://github.com/guaclive/gms"

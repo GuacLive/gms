@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 categories = ["flv"]
 keywords = ["flv", "video", "streaming"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 byteorder = "1.4.2"
