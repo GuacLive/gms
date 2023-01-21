@@ -1,12 +1,13 @@
-use super::errors::HlsError;
-use super::errors::HlsErrorValue;
-use super::flv_data_receiver::FlvDataReceiver;
-use super::hls_event_manager::{DispatchEvent, DispatchEventProducer};
-
-use rtmp::channels::define::ChannelEventProducer;
-use rtmp::channels::define::ClientEvent;
-use rtmp::channels::define::ClientEventConsumer;
-use tokio::sync::oneshot;
+use {
+    super::{
+        errors::HlsError,
+        errors::HlsErrorValue,
+        flv_data_receiver::FlvDataReceiver,
+        hls_event_manager::{DispatchEvent, DispatchEventProducer},
+    },
+    rtmp::channels::define::{ChannelEventProducer, ClientEvent, ClientEventConsumer},
+    tokio::sync::oneshot,
+};
 
 pub struct RtmpEventProcessor {
     client_event_consumer: ClientEventConsumer,

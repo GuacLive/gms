@@ -51,14 +51,10 @@ enum ServerSessionState {
 pub struct ServerSession {
     pub app_name: String,
     pub stream_name: String,
-
     io: Arc<Mutex<BytesIO>>,
     handshaker: HandshakeServer,
-
     unpacketizer: ChunkUnpacketizer,
-
     state: ServerSessionState,
-
     pub common: Common,
     webhook_config: RtmpWebhookConfig,
 
@@ -69,7 +65,6 @@ pub struct ServerSession {
     in channels and delete it from map when unsubscribe
     is called. */
     pub subscriber_id: Uuid,
-
     connect_command_object: Option<HashMap<String, Amf0ValueType>>,
 }
 
@@ -84,16 +79,11 @@ impl ServerSession {
         Self {
             app_name: String::from(""),
             stream_name: String::from(""),
-
             io: Arc::clone(&net_io),
             handshaker: HandshakeServer::new(Arc::clone(&net_io)),
-
             unpacketizer: ChunkUnpacketizer::new(),
-
             state: ServerSessionState::Handshake,
-
             common: Common::new(Arc::clone(&net_io), event_producer, SessionType::Server),
-
             subscriber_id,
             bytesio_data: BytesMut::new(),
             has_remaining_data: false,
