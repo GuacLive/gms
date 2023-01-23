@@ -73,7 +73,6 @@ impl MetaData {
                     return false;
                 }
             }
-            break;
         }
 
         true

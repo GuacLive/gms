@@ -37,7 +37,11 @@ impl Pmt {
 pub struct PmtMuxer {
     pub bytes_writer: BytesWriter,
 }
-
+impl Default for PmtMuxer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl PmtMuxer {
     pub fn new() -> Self {
         Self {

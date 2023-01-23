@@ -145,8 +145,7 @@ impl TsMuxer {
 
         self.bytes_writer.write_u8(pid as u8)?; //2
 
-        self.bytes_writer
-            .write_u8(0x10 | continuity_counter)?;
+        self.bytes_writer.write_u8(0x10 | continuity_counter)?;
 
         /*adaption field control*/
         self.bytes_writer.write_u8(0x00)?; //4
@@ -321,20 +320,15 @@ impl TsMuxer {
     }
 
     pub fn find_stream(&mut self, pid: u16) -> Result<(), MpegTsError> {
-        let mut pmt_index: usize = 0;
-        let mut stream_index: usize = 0;
-
-        for pmt in self.pat.pmt.iter_mut() {
-            for stream in pmt.streams.iter_mut() {
+        for (pmt_index, pmt) in self.pat.pmt.iter_mut().enumerate() {
+            for (stream_index, stream) in pmt.streams.iter_mut().enumerate() {
                 if stream.pid == pid {
                     self.cur_pmt_index = pmt_index;
                     self.cur_stream_index = stream_index;
 
                     return Ok(());
                 }
-                stream_index += 1;
             }
-            pmt_index += 1;
         }
 
         Err(MpegTsError {

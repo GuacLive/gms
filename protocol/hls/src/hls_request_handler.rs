@@ -93,7 +93,7 @@ impl Service<Request<Body>> for HlsHandler {
                         let mut rc = tx.clone().subscribe();
                         let mp = m3u8_prod.clone();
 
-                        let fp = format!("./{}/{}/{}.m3u8", app_name, stream_name, stream_name);
+                        let fp = format!("./{app_name}/{stream_name}/{stream_name}.m3u8");
                         return Box::pin(async move {
                             let (resp_tx, resp_rx) = oneshot::channel();
 
@@ -113,8 +113,7 @@ impl Service<Request<Body>> for HlsHandler {
                             } = resp_rx.await.unwrap();
 
                             println!(
-                                "S_tsn: {} R_tsn: {}, S_ptsn: {}, R_ptsn: {}",
-                                tsn, msn_u, ptsn, msn_p
+                                "S_tsn: {tsn} R_tsn: {msn_u}, S_ptsn: {ptsn}, R_ptsn: {msn_p}"
                             );
 
                             if tsn > msn_u || (tsn >= msn_u && (msn_p < 1 || msn_p <= ptsn)) {
@@ -159,7 +158,7 @@ impl Service<Request<Body>> for HlsHandler {
                     }
                 }
 
-                file_path = format!("./{}/{}/{}.m3u8", app_name, stream_name, stream_name);
+                file_path = format!("./{app_name}/{stream_name}/{stream_name}.m3u8");
             }
         } else if path.ends_with(".ts") {
             //http://127.0.0.1/app_name/stream_name/ts_name.m3u8
@@ -174,7 +173,7 @@ impl Service<Request<Body>> for HlsHandler {
                 let stream_name = String::from(rv[2]);
                 let ts_name = String::from(rv[3]);
 
-                file_path = format!("./{}/{}/{}.ts", app_name, stream_name, ts_name);
+                file_path = format!("./{app_name}/{stream_name}/{ts_name}.ts");
             }
         }
         let f = async move { simple_file_send(file_path.as_str()).await };

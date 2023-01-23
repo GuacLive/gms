@@ -56,7 +56,7 @@ async fn handle_connection(
 }
 
 pub async fn run(event_producer: ChannelEventProducer, port: u32) -> Result<()> {
-    let listen_address = format!("0.0.0.0:{}", port);
+    let listen_address = format!("0.0.0.0:{port}");
     let sock_addr = listen_address.parse().unwrap();
 
     let new_service = make_service_fn(move |_| {

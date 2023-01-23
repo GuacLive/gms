@@ -502,7 +502,6 @@ impl ServerSession {
                 Amf0ValueType::Boolean(val) => Some(val),
                 _ => None,
             };
-            break;
         }
 
         let mut event_messages = EventMessagesWriter::new(AsyncBytesWriter::new(self.io.clone()));

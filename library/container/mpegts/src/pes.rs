@@ -49,7 +49,11 @@ impl Pes {
 pub struct PesMuxer {
     pub bytes_writer: BytesWriter,
 }
-
+impl Default for PesMuxer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 impl PesMuxer {
     pub fn new() -> Self {
         Self {

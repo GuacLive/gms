@@ -215,8 +215,6 @@ impl Mpeg4AacProcessor {
                 self.bits_data.read_n_bits(2)?;
                 self.bits_data.read_n_bits(1)?;
             }
-        } else if self.bits_data.read_n_bits(1)? > 0 {
-            self.bits_data.read_n_bits(2)?;
         } else {
             self.bits_data.read_n_bits(2)?;
         }

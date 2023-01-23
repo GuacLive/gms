@@ -1,6 +1,4 @@
-use std::{
-    sync::{Arc, RwLock},
-};
+use std::sync::{Arc, RwLock};
 
 use crate::hls_event_manager::{M3u8Consumer, M3u8Event};
 
@@ -108,7 +106,7 @@ impl M3u8 {
         app_name: String,
         stream_name: String,
     ) -> Self {
-        let m3u8_folder = format!("./{}/{}", app_name, stream_name);
+        let m3u8_folder = format!("./{app_name}/{stream_name}");
         fs::create_dir_all(m3u8_folder.clone()).unwrap();
 
         Self {
@@ -197,7 +195,7 @@ impl M3u8 {
                     ts_num,
                     duration,
                     false,
-                    format!("{}.ts", ts_num),
+                    format!("{ts_num}.ts"),
                     ts_path,
                     false,
                     false,
@@ -317,7 +315,7 @@ impl M3u8 {
         let m3u8_path = format!("{}/{}", self.m3u8_folder, self.m3u8_name);
 
         let mut file_handler = File::create(m3u8_path).unwrap();
-        file_handler.write(m3u8_content.as_bytes())?;
+        Write::write_all(&mut file_handler, m3u8_content.as_bytes())?;
 
         if broadcast_new_msn {
             self.hls_event_tx
