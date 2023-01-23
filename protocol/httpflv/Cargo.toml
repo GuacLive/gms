@@ -22,11 +22,6 @@ rtmp = {path = "../rtmp/"}#"0.0.4"
 hyper = { version = "0.14", features = ["full"] }
 futures = "0.3"
 
-xflv = "1.0.0"
-rtmp = "1.0.0"
-#xflv = { path = "../../library/container/flv/" }
-#rtmp = { path = "../rtmp/" } #"0.0.4"
-
 [dependencies.tokio]
 version = "^1"
 default-features = false

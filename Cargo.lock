@@ -488,7 +488,7 @@ checksum = "dec7af912d60cdbd3677c1af9352ebae6fb8394d165568a2234df0fa00f87793"
 
 [[package]]
 name = "gms"
-version = "0.0.11"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "hls"
-version = "0.0.10"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "byteorder",
@@ -609,7 +609,7 @@ checksum = "c4a1e36c821dbe04574f602848a19f742f4fb3c98d40449f11bcad18d6b17421"
 
 [[package]]
 name = "httpflv"
-version = "0.0.7"
+version = "1.0.0"
 dependencies = [
  "byteorder",
  "bytes",
@@ -1118,7 +1118,7 @@ dependencies = [
 
 [[package]]
 name = "rtmp"
-version = "0.0.14"
+version = "1.0.0"
 dependencies = [
  "byteorder",
  "bytes",
@@ -1874,7 +1874,7 @@ dependencies = [
 
 [[package]]
 name = "xflv"
-version = "0.0.3"
+version = "1.0.0"
 dependencies = [
  "bitvec",
  "byteorder",
@@ -1886,7 +1886,7 @@ dependencies = [
 
 [[package]]
 name = "xmpegts"
-version = "0.0.3"
+version = "1.0.0"
 dependencies = [
  "byteorder",
  "bytes",

@@ -36,11 +36,6 @@ chrono = "^0.4"
 default = ["std"]
 std = [ "serde" ]
 
-bytesio = "0.1.27"
-xflv = "1.0.0"
-#bytesio = {path = "../../library/bytesio/"}
-#xflv = { path = "../../library/container/flv/" }
-
 [dependencies.tokio]
 version = "^1"
 default-features = false
