@@ -488,7 +488,7 @@ checksum = "221996f774192f0f718773def8201c4ae31f02616a54ccfc2d358bb0e5cefdec"
 
 [[package]]
 name = "gms"
-version = "1.0.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -496,6 +496,7 @@ dependencies = [
  "failure",
  "hls",
  "httpflv",
+ "log",
  "rtmp",
  "serde",
  "serde_derive",
@@ -547,7 +548,7 @@ dependencies = [
 
 [[package]]
 name = "hls"
-version = "1.0.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "byteorder",
@@ -609,7 +610,7 @@ checksum = "c4a1e36c821dbe04574f602848a19f742f4fb3c98d40449f11bcad18d6b17421"
 
 [[package]]
 name = "httpflv"
-version = "1.0.0"
+version = "0.1.1"
 dependencies = [
  "byteorder",
  "bytes",
@@ -1842,7 +1843,7 @@ dependencies = [
 
 [[package]]
 name = "xmpegts"
-version = "1.0.0"
+version = "0.1.0"
 dependencies = [
  "byteorder",
  "bytes",

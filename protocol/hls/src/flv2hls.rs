@@ -106,8 +106,6 @@ impl Flv2HlsRemuxer {
     }
 
     pub fn process_flv_data(&mut self, data: FlvData) -> Result<(), MediaError> {
-        
-
         let flv_demux_data: FlvDemuxerData = match data {
             FlvData::Audio { timestamp, data } => {
                 let audio_data = self.audio_demuxer.demux(timestamp, data)?;

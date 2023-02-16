@@ -32,11 +32,23 @@ Issue the following command to install gms:
 
     cargo install gms
 
-Start the service with the following command:
+Start the service with the following command to get help:
 
-    gms configuration_file_path/config.toml
+    gms -h
+    A secure and easy to use live media server
 
-### Build from souce
+    Usage: gms [OPTIONS] <--config <path>|--rtmp <port>>
+
+    Options:
+      -c, --config <path>   Specify the gms server configuration file path.
+      -r, --rtmp <port>     Specify the RTMP listening port(e.g.:1935).
+      -f, --httpflv <port>  Specify the HTTP-FLV listening port(e.g.:8080).
+      -s, --hls <port>      Specify the HLS listening port(e.g.:8081).
+      -l, --log <level>     Specify the log level. [possible values: trace, debug, info, warn, error, debug]
+      -h, --help            Print help
+      -V, --version         Print version
+    
+### Build from source
 
 #### Clone gms
 
@@ -50,9 +62,24 @@ Start the service with the following command:
 #### Run
 
     cd ./gms/target/release
-    ./gms config.toml
+    ./gms -h
+    
+## CLI
 
-## Configuration
+#### Instructions
+
+You can use command line to configure the gms server easily. You can specify to configure gms using configuration file or from the command lines.
+
+##### Configure using configuation file
+
+    gms -c configuration_file_path
+
+##### using command line
+
+    gms -r 1935 -f 8080 -s 8081 -l info
+
+
+#### How to Configure the configuration file
 
 ##### RTMP
 
@@ -102,7 +129,14 @@ Start the service with the following command:
 
     [log]
     level = "info"
-
+    [log.file]
+    # write log to file or not（Writing logs to file or console cannot be satisfied at the same time）.
+    enabled = true
+    # set the rotate
+    rotate = "hour" #[day,hour,minute]
+    # set the path where the logs are saved
+    path = "./logs"
+    
 ### Configuration examples
 
 I edit some configuration files under the following path which can be used directly:

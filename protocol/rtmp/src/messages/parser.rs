@@ -175,15 +175,12 @@ mod tests {
                 }
             };
 
-            match rv {
-                UnpackResult::ChunkInfo(chunk_info) => {
-                    let _ = chunk_info.message_header.msg_streamd_id;
-                    let _ = chunk_info.message_header.timestamp;
+            if let UnpackResult::ChunkInfo(chunk_info) = rv {
+                let _ = chunk_info.message_header.msg_streamd_id;
+                let _ = chunk_info.message_header.timestamp;
 
-                    let message_parser = MessageParser::new(chunk_info);
-                    let _ = message_parser.parse();
-                }
-                _ => {}
+                let message_parser = MessageParser::new(chunk_info);
+                let _ = message_parser.parse();
             }
         }
     }

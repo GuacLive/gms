@@ -90,7 +90,7 @@ impl BytesWriter {
     }
 
     pub fn write(&mut self, buf: &[u8]) -> Result<(), BytesWriteError> {
-        Write::write_all(&mut self.bytes, buf)?;
+        self.bytes.write_all(buf)?;
         Ok(())
     }
 
@@ -139,6 +139,10 @@ impl BytesWriter {
 
     pub fn len(&self) -> usize {
         self.bytes.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 }
 

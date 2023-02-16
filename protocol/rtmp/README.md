@@ -105,7 +105,11 @@ For more detailed implementation please reference to [gms server](https://github
 
 # Version History
 ## v0.0.1
+<<<<<<< HEAD
 - support rtmp publish and play
+=======
+- support rtmp pushlish and play
+>>>>>>> xiu/master
 ## v0.0.2
 
 - support rtmp relay pull and static push

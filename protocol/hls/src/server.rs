@@ -4,7 +4,7 @@ use {
     hyper::Server,
 };
 
-pub async fn run(port: u32, hls_event_manager: HlsEventManager) -> Result<(), hyper::Error> {
+pub async fn run(port: usize, hls_event_manager: HlsEventManager) -> Result<(), hyper::Error> {
     let listen_address = format!("0.0.0.0:{port}");
     let sock_addr = listen_address.parse().unwrap();
 

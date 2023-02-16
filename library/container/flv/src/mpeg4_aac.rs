@@ -25,8 +25,14 @@ pub struct Mpeg4Aac {
     pub npce: usize,
 }
 
+impl Default for Mpeg4Aac {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Mpeg4Aac {
-    pub fn default() -> Self {
+    pub fn new() -> Self {
         Self {
             profile: 0,
             sampling_frequency_index: 0,
@@ -48,7 +54,7 @@ pub struct Mpeg4AacProcessor {
     pub bits_data: Mpeg4BitVec,
     pub mpeg4_aac: Mpeg4Aac,
 }
-//https://blog.csdn.net/coloriy/article/details/90511746
+
 impl Default for Mpeg4AacProcessor {
     fn default() -> Self {
         Self::new()
@@ -61,7 +67,7 @@ impl Mpeg4AacProcessor {
             bytes_reader: BytesReader::new(BytesMut::new()),
             bytes_writer: BytesWriter::new(),
             bits_data: Mpeg4BitVec::new(),
-            mpeg4_aac: Mpeg4Aac::default(),
+            mpeg4_aac: Mpeg4Aac::new(),
         }
     }
 
@@ -216,8 +222,15 @@ impl Mpeg4AacProcessor {
                 self.bits_data.read_n_bits(1)?;
             }
         } else {
+            self.bits_data.read_n_bits(1)?;
             self.bits_data.read_n_bits(2)?;
         }
+
+        // if self.bits_data.read_n_bits(1)? > 0 {
+        //     self.bits_data.read_n_bits(2)?;
+        // } else {
+        //     self.bits_data.read_n_bits(2)?;
+        // }
 
         Ok(())
     }
@@ -390,7 +403,7 @@ impl Mpeg4AacProcessor {
         let len = (self.bytes_reader.len() + 7) as u32;
         self.bytes_writer.write_u8(0xFF)?; //0
         self.bytes_writer.write_u8(
-            0xF0 /* 12-syncword */ | (id << 3) /*2-layer*/ | 0x01, /*1-protection_absent*/
+            0xF0 /* 12-syncword */ | (id << 3)/*1-ID*/| 0x01, /*1-protection_absent*/
         )?; //1
 
         let profile = self.mpeg4_aac.profile;

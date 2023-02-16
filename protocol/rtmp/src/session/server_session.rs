@@ -122,20 +122,16 @@ impl ServerSession {
 
         self.handshaker.handshake().await?;
 
-        match self.handshaker.state() {
-            ServerHandshakeState::Finish => {
-                self.state = ServerSessionState::ReadChunk;
-
-                let left_bytes = self.handshaker.get_remaining_bytes();
-                if !left_bytes.is_empty() {
-                    self.unpacketizer.extend_data(&left_bytes[..]);
-                    self.has_remaining_data = true;
-                }
-                tracing::info!("[ S->C ] [send_set_chunk_size] ");
-                self.send_set_chunk_size().await?;
-                return Ok(());
+        if let ServerHandshakeState::Finish = self.handshaker.state() {
+            self.state = ServerSessionState::ReadChunk;
+            let left_bytes = self.handshaker.get_remaining_bytes();
+            if !left_bytes.is_empty() {
+                self.unpacketizer.extend_data(&left_bytes[..]);
+                self.has_remaining_data = true;
             }
-            _ => {}
+            tracing::info!("[ S->C ] [send_set_chunk_size] ");
+            self.send_set_chunk_size().await?;
+            return Ok(());
         }
 
         Ok(())
@@ -173,18 +169,15 @@ impl ServerSession {
             let result = self.unpacketizer.read_chunks();
 
             if let Ok(rv) = result {
-                match rv {
-                    UnpackResult::Chunks(chunks) => {
-                        for chunk_info in chunks {
-                            let timestamp = chunk_info.message_header.timestamp;
-                            let msg_stream_id = chunk_info.message_header.msg_streamd_id;
+                if let UnpackResult::Chunks(chunks) = rv {
+                    for chunk_info in chunks {
+                        let timestamp = chunk_info.message_header.timestamp;
+                        let msg_stream_id = chunk_info.message_header.msg_streamd_id;
 
-                            let mut msg = MessageParser::new(chunk_info).parse()?;
-                            self.process_messages(&mut msg, &msg_stream_id, &timestamp)
-                                .await?;
-                        }
+                        let mut msg = MessageParser::new(chunk_info).parse()?;
+                        self.process_messages(&mut msg, &msg_stream_id, &timestamp)
+                            .await?;
                     }
-                    _ => {}
                 }
             } else {
                 break;
@@ -297,12 +290,10 @@ impl ServerSession {
             "deleteStream" => {
                 if !others.is_empty() {
                     let stream_id = match others.pop() {
-                        Some(val) => match val {
-                            Amf0ValueType::Number(streamid) => streamid,
-                            _ => 0.0,
-                        },
+                        Some(Amf0ValueType::Number(streamid)) => streamid,
                         _ => 0.0,
                     };
+
                     tracing::info!(
                         "[ S<-C ] [delete stream] app_name: {}, stream_name: {}",
                         self.app_name,
@@ -384,10 +375,10 @@ impl ServerSession {
         netconnection
             .write_connect_response(
                 transaction_id,
-                &define::FMSVER.to_string(),
+                define::FMSVER,
                 &define::CAPABILITIES,
                 &String::from("NetConnection.Connect.Success"),
-                &define::LEVEL.to_string(),
+                define::LEVEL,
                 &String::from("Connection Succeeded."),
                 encoding,
             )
@@ -423,9 +414,9 @@ impl ServerSession {
         netstream
             .write_on_status(
                 transaction_id,
-                &"status".to_string(),
-                &"NetStream.DeleteStream.Success".to_string(),
-                &"".to_string(),
+                "status",
+                "NetStream.DeleteStream.Suceess",
+                "",
             )
             .await?;
 
@@ -452,6 +443,8 @@ impl ServerSession {
 
         Ok(())
     }
+
+    #[allow(clippy::never_loop)]
     pub async fn on_play(
         &mut self,
         transaction_id: &f64,
@@ -520,38 +513,33 @@ impl ServerSession {
 
         let mut netstream = NetStreamWriter::new(Arc::clone(&self.io));
         netstream
+            .write_on_status(transaction_id, "status", "NetStream.Play.Reset", "reset")
+            .await?;
+
+        netstream
             .write_on_status(
                 transaction_id,
-                &"status".to_string(),
-                &"NetStream.Play.Reset".to_string(),
-                &"reset".to_string(),
+                "status",
+                "NetStream.Play.Start",
+                "play start",
             )
             .await?;
 
         netstream
             .write_on_status(
                 transaction_id,
-                &"status".to_string(),
-                &"NetStream.Play.Start".to_string(),
-                &"play start".to_string(),
+                "status",
+                "NetStream.Data.Start",
+                "data start.",
             )
             .await?;
 
         netstream
             .write_on_status(
                 transaction_id,
-                &"status".to_string(),
-                &"NetStream.Data.Start".to_string(),
-                &"data start.".to_string(),
-            )
-            .await?;
-
-        netstream
-            .write_on_status(
-                transaction_id,
-                &"status".to_string(),
-                &"NetStream.Play.PublishNotify".to_string(),
-                &"play publish notify.".to_string(),
+                "status",
+                "NetStream.Play.PublishNotify",
+                "play publish notify.",
             )
             .await?;
 
@@ -670,12 +658,7 @@ impl ServerSession {
 
         let mut netstream = NetStreamWriter::new(Arc::clone(&self.io));
         netstream
-            .write_on_status(
-                transaction_id,
-                &"status".to_string(),
-                &"NetStream.Publish.Start".to_string(),
-                &"".to_string(),
-            )
+            .write_on_status(transaction_id, "status", "NetStream.Publish.Start", "")
             .await?;
         tracing::info!(
             "[ S->C ] [NetStream.Publish.Start]  app_name: {}, stream_name: {}",

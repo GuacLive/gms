@@ -20,8 +20,14 @@ pub struct Pmt {
     pub streams: Vec<pes::Pes>,
 }
 
+impl Default for Pmt {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Pmt {
-    pub fn default() -> Self {
+    pub fn new() -> Self {
         Self {
             pid: 0,
             program_number: 0,
@@ -74,12 +80,11 @@ impl PmtMuxer {
 
         for stream in &pmt.streams {
             /*stream_type*/
-            let stream_type: u8;
-            if stream.codec_id == epsi_stream_type::PSI_STREAM_AUDIO_OPUS {
-                stream_type = epsi_stream_type::PSI_STREAM_PRIVATE_DATA;
+            let stream_type = if stream.codec_id == epsi_stream_type::PSI_STREAM_AUDIO_OPUS {
+                epsi_stream_type::PSI_STREAM_PRIVATE_DATA
             } else {
-                stream_type = stream.codec_id;
-            }
+                stream.codec_id
+            };
             tmp_bytes_writer.write_u8(stream_type)?;
             /*elementary_PID*/
             tmp_bytes_writer.write_u16::<BigEndian>(0xE000 | stream.pid)?;

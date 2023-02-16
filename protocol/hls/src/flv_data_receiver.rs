@@ -78,15 +78,9 @@ impl FlvDataReceiver {
 
         loop {
             if let Some(data) = self.data_consumer.recv().await {
-                
-
                 let flv_data: FlvData = match data {
-                    ChannelData::Audio { timestamp, data } => {
-                        FlvData::Audio { timestamp, data }
-                    }
-                    ChannelData::Video { timestamp, data } => {
-                        FlvData::Video { timestamp, data }
-                    }
+                    ChannelData::Audio { timestamp, data } => FlvData::Audio { timestamp, data },
+                    ChannelData::Video { timestamp, data } => FlvData::Video { timestamp, data },
                     _ => continue,
                 };
                 retry_count = 0;

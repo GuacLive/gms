@@ -1,8 +1,8 @@
 [package]
 name = "gms"
-description = "A powerful live server by Rust ."
-version = "1.0.0"
-authors = ["HarlanC <wawacry@qq.com"]
+description = "A secure and easy to use live media server"
+version = "0.4.0"
+authors = ["Thomas Lekanger <datagutt@lekanger.no"]
 repository = "https://github.com/guaclive/gms"
 license = "MIT"
 readme = "README.md"
@@ -23,6 +23,7 @@ clap = { version = "^4", features = [ "derive" ]}
 rtmp = {path = "../../protocol/rtmp/"}
 httpflv = {path = "../../protocol/httpflv/"}
 hls = {path = "../../protocol/hls/"}
+log = "0.4.0"
 
 [features]
 default = ["std"]

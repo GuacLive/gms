@@ -13,8 +13,14 @@ pub struct Sps {
     pub data: BytesMut,
 }
 
+impl Default for Sps {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Sps {
-    pub fn default() -> Self {
+    pub fn new() -> Self {
         Self {
             size: 0,
             data: BytesMut::new(),
@@ -26,8 +32,14 @@ pub struct Pps {
     pub data: BytesMut,
 }
 
+impl Default for Pps {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Pps {
-    pub fn default() -> Self {
+    pub fn new() -> Self {
         Self {
             size: 0,
             data: BytesMut::new(),
@@ -72,8 +84,14 @@ pub fn print(data: BytesMut) {
     println!("===========")
 }
 
+impl Default for Mpeg4Avc {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Mpeg4Avc {
-    pub fn default() -> Self {
+    pub fn new() -> Self {
         Self {
             profile: 0,
             compatibility: 0,
@@ -112,7 +130,7 @@ impl Mpeg4AvcProcessor {
         Self {
             bytes_reader: BytesReader::new(BytesMut::new()),
             bytes_writer: BytesWriter::new(),
-            mpeg4_avc: Mpeg4Avc::default(),
+            mpeg4_avc: Mpeg4Avc::new(),
         }
     }
 
@@ -140,7 +158,7 @@ impl Mpeg4AvcProcessor {
         /*avc level*/
         self.mpeg4_avc.level = self.bytes_reader.read_u8()?;
         /*nalu length*/
-        self.mpeg4_avc.nalu_length = self.bytes_reader.read_u8()? & (0x03 + 1);
+        self.mpeg4_avc.nalu_length = (self.bytes_reader.read_u8()? & 0x03) + 1;
 
         /*number of SPS NALUs */
         self.mpeg4_avc.nb_sps = self.bytes_reader.read_u8()? & 0x1F;
@@ -194,7 +212,7 @@ impl Mpeg4AvcProcessor {
     pub fn h264_mp4toannexb(&mut self) -> Result<(), MpegAvcError> {
         let mut sps_pps_flag = false;
 
-        while self.bytes_reader.len() > 0 {
+        while !self.bytes_reader.is_empty() {
             let size = self.get_nalu_size()?;
             let nalu_type = self.bytes_reader.advance_u8()? & 0x1f;
 
