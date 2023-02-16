@@ -105,7 +105,7 @@ impl BytesReader {
         Ok(val)
     }
 
-    pub fn get(&self, index: usize) -> Result<u8, BytesReadError> {
+    pub fn get(&mut self, index: usize) -> Result<u8, BytesReadError> {
         if index >= self.len() {
             return Err(BytesReadError {
                 value: BytesReadErrorValue::IndexOutofRange,
