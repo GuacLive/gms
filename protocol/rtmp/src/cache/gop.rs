@@ -67,7 +67,7 @@ impl Gops {
         if let Some(gop) = self.gops.back_mut() {
             gop.save_frame_data(data);
         } else {
-            log::error!("should not be here!");
+            tracing::error!("should not be here!");
         }
     }
 
