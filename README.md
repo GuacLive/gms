@@ -4,15 +4,17 @@ gms is a simple and secure live media server written by pure Rust, it now suppor
 
 ## Features
 
-- [x] RTMP
-  - [x] publish and play
-  - [x] relay: static push
-  - [x] relay: static pull
-- [x] HTTPFLV
-- [x] HLS
-- [x] LLHLS
-- [ ] SRT
-
+- [x] Support multiple platforms(Linux/MacOS/Windows).
+- [x] Support RTMP as a 
+stand-alone server or cluster(RTMP relay).
+   - [x] Support GOP cache.
+- [x] Support HTTP-FLV/HLS protocols(Transferred from RTMP).
+- [x] Support configuring the service using command line or a configuration file.
+- [ ] Support HTTP API/Notifications.
+  - [ ] Support querying stream/machine information and so on.
+  - [x] Support notify stream status.
+- [ ] Support token authentications.
+- [ ] Support RTSP.
 ## Preparation
 
 #### Install Rust and Cargo
@@ -70,11 +72,11 @@ Start the service with the following command to get help:
 
 You can use command line to configure the gms server easily. You can specify to configure gms using configuration file or from the command lines.
 
-##### Configure using configuation file
+##### Configure using file
 
     gms -c configuration_file_path
 
-##### using command line
+##### Configure using command line
 
     gms -r 1935 -f 8080 -s 8081 -l info
 
