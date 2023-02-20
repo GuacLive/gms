@@ -97,7 +97,7 @@ impl BytesWriter {
     pub fn prepend(&mut self, buf: &[u8]) -> Result<(), BytesWriteError> {
         let tmp_bytes = self.bytes.clone();
         self.bytes.clear();
-        Write::write_all(&mut self.bytes, &buf)?;
+        Write::write_all(&mut self.bytes, buf)?;
         Write::write_all(&mut self.bytes, tmp_bytes.as_slice())?;
         Ok(())
     }
