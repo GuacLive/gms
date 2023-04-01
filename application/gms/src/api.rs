@@ -63,6 +63,9 @@ pub async fn run(producer: ChannelEventProducer, port: usize) {
         channel_event_producer: producer,
     });
 
+    let listen_address = format!("0.0.0.0:{port}");
+    let sock_addr = listen_address.parse().unwrap();
+
     let api_root = api.clone();
     let root = move || async move { api_root.root().await };
 
@@ -77,9 +80,8 @@ pub async fn run(producer: ChannelEventProducer, port: usize) {
     let app = Router::new()
         .route("/", get(root))
         .route("/get_stream_status", get(status));
-    tracing::info!("Http api server listening on http://:{}", port);
-    axum::Server::bind(&([127, 0, 0, 1], port as u16).into())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    tracing::info!("Http api server listening on http://:{}", sock_addr);
+
+    let server = axum::Server::bind(&sock_addr);
+    server.serve(app.into_make_service()).await.unwrap();
 }
