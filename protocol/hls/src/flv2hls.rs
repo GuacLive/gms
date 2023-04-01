@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::hls_event_manager::M3u8Consumer;
 
 use {
