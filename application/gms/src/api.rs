@@ -31,20 +31,15 @@ impl ApiService {
         }
         let mut data = Vec::new();
         match size_receiver.await {
-            Ok(size) => {
-                if size == 0 {
-                    return Ok(String::from("no stream data"));
+            Ok(size) => loop {
+                if let Some(stream_statistics) = data_receiver.recv().await {
+                    data.push(stream_statistics);
                 }
-                loop {
-                    if let Some(stream_statistics) = data_receiver.recv().await {
-                        data.push(stream_statistics);
-                    }
 
-                    if data.len() == size {
-                        break;
-                    }
+                if data.len() == size {
+                    break;
                 }
-            }
+            },
             Err(err) => {
                 tracing::error!("start_api_service recv size error: {}", err);
             }
