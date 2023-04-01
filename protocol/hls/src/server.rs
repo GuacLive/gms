@@ -13,7 +13,7 @@ pub async fn run(port: usize, hls_event_manager: HlsEventManager) -> Result<(), 
     let server = Server::bind(&sock_addr).serve(MakeHlsHandler { stp_map: t });
     tracing::info!("Hls server listening on http://{}", sock_addr);
     if let Err(e) = server.await {
-        eprintln!("server error: {e}");
+        tracing::error!("server error: {}", e);
     }
 
     Ok(())
