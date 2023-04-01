@@ -76,6 +76,15 @@ async fn main() -> Result<()> {
                 .conflicts_with("config_file_path"),
         )
         .arg(
+            Arg::new("api")
+                .long("api")
+                .short('a')
+                .value_name("port")
+                .help("Specify the api listening port.(e.g.:8000)")
+                .value_parser(value_parser!(usize))
+                .conflicts_with("config_file_path"),
+        )
+        .arg(
             Arg::new("log")
                 .long("log")
                 .short('l')
@@ -120,11 +129,15 @@ async fn main() -> Result<()> {
             Some(val) => *val,
             None => 0,
         };
+        let api_port = match matches.get_one::<usize>("api") {
+            Some(val) => *val,
+            None => 0,
+        };
         let log_level = match matches.get_one::<String>("log") {
             Some(val) => val.clone(),
             None => String::from("info"),
         };
-        Config::new(rtmp_port, httpflv_port, hls_port, log_level)
+        Config::new(rtmp_port, httpflv_port, hls_port, api_port, log_level)
     };
 
     /* init logger */

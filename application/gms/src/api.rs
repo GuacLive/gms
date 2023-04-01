@@ -80,7 +80,7 @@ pub async fn run(producer: ChannelEventProducer, port: usize) {
     let app = Router::new()
         .route("/", get(root))
         .route("/get_stream_status", get(status));
-    tracing::info!("Http api server listening on http://:{}", sock_addr);
+    tracing::info!("Http api server listening on http://{}", sock_addr);
 
     let server = axum::Server::bind(&sock_addr);
     server.serve(app.into_make_service()).await.unwrap();

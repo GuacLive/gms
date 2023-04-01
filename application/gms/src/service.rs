@@ -39,17 +39,20 @@ impl Service {
     }
 
     async fn start_http_api_server(&mut self, channel: &mut ChannelsManager) -> Result<()> {
+        let httpapi_cfg = &self.cfg.httpapi;
         let producer = channel.get_channel_event_producer();
 
-        let http_api_port = if let Some(httpapi) = &self.cfg.httpapi {
-            httpapi.port
-        } else {
-            8000
-        };
+        if let Some(httpapi_cfg_value) = httpapi_cfg {
+            if !httpapi_cfg_value.enabled {
+                return Ok(());
+            }
 
-        tokio::spawn(async move {
-            api::run(producer, http_api_port).await;
-        });
+            let http_api_port = httpapi_cfg_value.port;
+
+            tokio::spawn(async move {
+                api::run(producer, http_api_port).await;
+            });
+        }
         Ok(())
     }
 

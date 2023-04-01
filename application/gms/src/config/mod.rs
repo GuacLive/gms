@@ -17,7 +17,13 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(rtmp_port: usize, httpflv_port: usize, hls_port: usize, log_level: String) -> Self {
+    pub fn new(
+        rtmp_port: usize,
+        httpflv_port: usize,
+        hls_port: usize,
+        api_port: usize,
+        log_level: String,
+    ) -> Self {
         let mut rtmp_config: Option<RtmpConfig> = None;
         if rtmp_port > 0 {
             rtmp_config = Some(RtmpConfig {
@@ -46,6 +52,14 @@ impl Config {
             });
         }
 
+        let mut httpapi_config: Option<HttpApi> = None;
+        if api_port > 0 {
+            httpapi_config = Some(HttpApi {
+                enabled: true,
+                port: api_port,
+            });
+        }
+
         let log_config = Some(LogConfig {
             level: log_level,
             file: None,
@@ -55,7 +69,7 @@ impl Config {
             rtmp: rtmp_config,
             httpflv: httpflv_config,
             hls: hls_config,
-            httpapi: None,
+            httpapi: httpapi_config,
             log: log_config,
         }
     }
@@ -117,6 +131,7 @@ pub struct LogFile {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct HttpApi {
+    pub enabled: bool,
     pub port: usize,
 }
 

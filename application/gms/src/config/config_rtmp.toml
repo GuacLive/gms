@@ -11,6 +11,13 @@ publish_url = "http://localhost:8080/api/v1/publish"
 publish_done_url = "http://localhost:8080/api/v1/publish_done"
 
 ##########################
+# HTTPAPI configurations #
+##########################
+[httpapi]
+enabled = true
+port = 8000
+
+##########################
 #   LOG configurations   #
 ##########################
 [log]
