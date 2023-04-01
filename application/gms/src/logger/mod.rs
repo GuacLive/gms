@@ -6,7 +6,7 @@ use crate::config::LogConfig;
 pub struct Logger;
 
 impl Logger {
-    pub fn new(LogConfig { level, file }: LogConfig) -> Result<()> {
+    pub fn new(LogConfig { level, file: _ }: LogConfig) -> Result<Self> {
         tracing::subscriber::set_global_default(
             tracing_subscriber::FmtSubscriber::builder()
                 .with_env_filter(level)
@@ -18,6 +18,6 @@ impl Logger {
 
         LogTracer::init()?;
 
-        Ok(())
+        Ok(Self)
     }
 }
