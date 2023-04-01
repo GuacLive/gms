@@ -1,6 +1,6 @@
 ## GMS (Guac Media Server)
 
-gms is a simple and secure live media server written by pure Rust, it now supports popular live protocols like RTMP/HLS/LLHLS/HTTP-FLV (and maybe other protocols in the future), you can deploy it as a stand-alone server or a cluster using the relay feature.
+GMS is a simple, high performance and secure live media server written in pure Rust. It supports popular live protocols like RTMP/HLS/LL-HLS/HTTP-FLV. You can deploy it as a stand-alone server or a cluster using the relay feature.
 
 ## Features
 
@@ -13,8 +13,6 @@ gms is a simple and secure live media server written by pure Rust, it now suppor
 - [x] Support HTTP API/Notifications.
   - [x] Support querying stream information.
   - [x] Support notify stream status.
-- [ ] Support token authentications.
-- [ ] Support RTSP.
 
 ## Preparation
 
