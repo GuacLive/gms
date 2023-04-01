@@ -12,7 +12,7 @@ impl Logger {
                 .with_env_filter(level)
                 .with_line_number(true)
                 .with_file(true)
-                .json()
+                //.json()
                 .finish(),
         )?;
 
