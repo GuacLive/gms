@@ -2,7 +2,7 @@ use {
     //https://rustcc.cn/article?id=6dcbf032-0483-4980-8bfe-c64a7dfb33c7
     anyhow::Result,
     clap::{value_parser, Arg, ArgGroup, Command},
-    gms::{config, config::Config, service::Service},
+    gms::{config, config::Config, logger::Logger, service::Service},
     std::env,
     tokio::signal,
 };
@@ -26,7 +26,6 @@ use std::panic;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-
     panic::set_hook(Box::new(|panic_info| {
         if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
             println!("panic occurred: {s:?}");
@@ -128,17 +127,17 @@ async fn main() -> Result<()> {
         Config::new(rtmp_port, httpflv_port, hls_port, log_level)
     };
 
-    /*set log level*/
+    /* init logger */
     if let Some(log_config_value) = &config.log {
-        env::set_var("RUST_LOG", log_config_value.level.clone());
+        Logger::new(log_config_value.clone())?;
     } else {
-        env::set_var("RUST_LOG", "info");
-    }
+        Logger::new(config::LogConfig {
+            level: String::from("info"),
+            file: None,
+        })?;
+    };
 
-    // install global collector configured based on RUST_LOG env var.
-    tracing_subscriber::fmt::init();
-
-    /*run the service*/
+    /* run the service */
     let mut service = Service::new(config);
     service.run().await?;
 

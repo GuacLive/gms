@@ -15,7 +15,8 @@ serde_derive = "^1"
 serde = { version = "^1", optional = true, features = ["derive"] }
 anyhow = "^1"
 tracing = "^0.1"
-tracing-subscriber = "^0.3"
+tracing-subscriber = { version = "^0.3", features = [ "env-filter", "json" ] }
+tracing-log = "^0.1"
 chrono = "^0.4"
 failure = "^0.1"
 clap = { version = "^4", features = [ "derive" ]}
@@ -30,7 +31,6 @@ axum = "0.6.10"
 rtmp = {path = "../../protocol/rtmp/"}
 httpflv = {path = "../../protocol/httpflv/"}
 hls = {path = "../../protocol/hls/"}
-log = "0.4.0"
 
 [features]
 default = ["std"]
