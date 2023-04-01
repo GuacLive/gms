@@ -5,16 +5,17 @@ gms is a simple and secure live media server written by pure Rust, it now suppor
 ## Features
 
 - [x] Support multiple platforms(Linux/MacOS/Windows).
-- [x] Support RTMP as a 
-stand-alone server or cluster(RTMP relay).
-   - [x] Support GOP cache.
+- [x] Support RTMP as a
+      stand-alone server or cluster(RTMP relay).
+  - [x] Support GOP cache which can be configured in the configuration file.
 - [x] Support HTTP-FLV/HLS protocols(Transferred from RTMP).
 - [x] Support configuring the service using command line or a configuration file.
-- [ ] Support HTTP API/Notifications.
-  - [ ] Support querying stream/machine information and so on.
+- [x] Support HTTP API/Notifications.
+  - [x] Support querying stream information.
   - [x] Support notify stream status.
 - [ ] Support token authentications.
 - [ ] Support RTSP.
+
 ## Preparation
 
 #### Install Rust and Cargo
@@ -49,7 +50,7 @@ Start the service with the following command to get help:
       -l, --log <level>     Specify the log level. [possible values: trace, debug, info, warn, error, debug]
       -h, --help            Print help
       -V, --version         Print version
-    
+
 ### Build from source
 
 #### Clone gms
@@ -65,7 +66,7 @@ Start the service with the following command to get help:
 
     cd ./gms/target/release
     ./gms -h
-    
+
 ## CLI
 
 #### Instructions
@@ -79,7 +80,6 @@ You can use command line to configure the gms server easily. You can specify to 
 ##### Configure using command line
 
     gms -r 1935 -f 8080 -s 8081 -l info
-
 
 #### How to Configure the configuration file
 
@@ -138,7 +138,7 @@ You can use command line to configure the gms server easily. You can specify to 
     rotate = "hour" #[day,hour,minute]
     # set the path where the logs are saved
     path = "./logs"
-    
+
 ### Configuration examples
 
 I edit some configuration files under the following path which can be used directly:

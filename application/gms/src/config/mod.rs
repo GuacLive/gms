@@ -12,6 +12,7 @@ pub struct Config {
     pub rtmp: Option<RtmpConfig>,
     pub httpflv: Option<HttpFlvConfig>,
     pub hls: Option<HlsConfig>,
+    pub httpapi: Option<HttpApi>,
     pub log: Option<LogConfig>,
 }
 
@@ -54,6 +55,7 @@ impl Config {
             rtmp: rtmp_config,
             httpflv: httpflv_config,
             hls: hls_config,
+            httpapi: None,
             log: log_config,
         }
     }
@@ -111,6 +113,11 @@ pub struct LogFile {
     pub enabled: bool,
     pub rotate: String,
     pub path: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct HttpApi {
+    pub port: usize,
 }
 
 pub fn load(cfg_path: &String) -> Result<Config, ConfigError> {

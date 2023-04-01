@@ -1,6 +1,7 @@
 use hls::hls_event_manager::HlsEventManager;
 
 use {
+    super::api,
     super::config::Config,
     //https://rustcc.cn/article?id=6dcbf032-0483-4980-8bfe-c64a7dfb33c7
     anyhow::Result,
@@ -12,6 +13,7 @@ use {
         relay::{pull_client::PullClient, push_client::PushClient},
         rtmp::RtmpServer,
     },
+
     tokio,
 };
 
@@ -30,9 +32,24 @@ impl Service {
         self.start_httpflv(&mut channel).await?;
         self.start_hls(&mut channel).await?;
         self.start_rtmp(&mut channel).await?;
+        self.start_http_api_server(&mut channel).await?;
 
         tokio::spawn(async move { channel.run().await });
+        Ok(())
+    }
 
+    async fn start_http_api_server(&mut self, channel: &mut ChannelsManager) -> Result<()> {
+        let producer = channel.get_channel_event_producer();
+
+        let http_api_port = if let Some(httpapi) = &self.cfg.httpapi {
+            httpapi.port
+        } else {
+            8000
+        };
+
+        tokio::spawn(async move {
+            api::run(producer, http_api_port).await;
+        });
         Ok(())
     }
 
@@ -51,7 +68,7 @@ impl Service {
             };
 
             channel.set_rtmp_gop_num(gop_num);
-            let producer = channel.get_session_event_producer();
+            let producer = channel.get_channel_event_producer();
 
             /*static push */
             if let Some(push_cfg_values) = &rtmp_cfg_value.push {
@@ -132,7 +149,7 @@ impl Service {
                 return Ok(());
             }
             let port = httpflv_cfg_value.port;
-            let event_producer = channel.get_session_event_producer();
+            let event_producer = channel.get_channel_event_producer();
 
             tokio::spawn(async move {
                 if let Err(err) = httpflv_server::run(event_producer, port).await {

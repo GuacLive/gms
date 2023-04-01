@@ -22,5 +22,6 @@ pub mod protocol_control_messages;
 pub mod relay;
 pub mod rtmp;
 pub mod session;
+pub mod statistics;
 pub mod user_control_messages;
 pub mod utils;
