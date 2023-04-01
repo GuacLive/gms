@@ -168,9 +168,7 @@ impl FlvVideoTagDemuxer {
                     return Ok(video_data);
                 }
                 _ => {}
-            },
-
-            _ => {}
+            }
         }
 
         Ok(FlvDemuxerVideoData::new())
@@ -225,8 +223,7 @@ impl FlvAudioTagDemuxer {
                     return Ok(audio_data);
                 }
                 _ => {}
-            },
-            _ => {}
+            }
         }
         Ok(FlvDemuxerAudioData::default())
     }

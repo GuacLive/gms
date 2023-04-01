@@ -173,7 +173,7 @@ impl Service {
             let hls_manager = HlsEventManager::new();
             let hls_dispatch = hls_manager.setup_dispatch_channel();
 
-            let event_producer = channel.get_session_event_producer();
+            let event_producer = channel.get_channel_event_producer();
             let client_event_consumer = channel.get_client_event_consumer();
             let mut rtmp_event_processor =
                 RtmpEventProcessor::new(client_event_consumer, event_producer, hls_dispatch);

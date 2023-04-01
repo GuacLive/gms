@@ -23,11 +23,11 @@ impl BitsReader {
         self.reader.extend_from_slice(&bytes[..]);
     }
 
-    pub fn len(&self) -> usize {
+    pub fn len(&mut self) -> usize {
         self.reader.len() * 8 + self.cur_bit_left as usize
     }
 
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(&mut self) -> bool {
         self.len() == 0
     }
 
