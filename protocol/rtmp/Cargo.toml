@@ -27,7 +27,7 @@ serde_json = { version = "1", default-features = false, features = [
     "std",
 ] }
 serde = { version = "^1", optional = true, features = ["derive"] }
-serde_with = "2.2.0"
+serde_with = "2.3.2"
 rustls = "^0.20"
 hyper-rustls = "^0.23"
 
