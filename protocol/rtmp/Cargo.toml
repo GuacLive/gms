@@ -17,7 +17,7 @@ rand = "^0.6"
 failure = "^0.1"
 hmac = "^0.12"
 sha2 = "^0.10"
-uuid = { version = "^1.2", features = ["v4"] }
+uuid = { version = "^1.4", features = ["v4"] }
 tokio-util = { version = "^0.7", features = ["codec"] }
 hyper = { version = "^0.14", features = ["full"] }
 serde_derive = "1"

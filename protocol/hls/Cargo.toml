@@ -16,7 +16,7 @@ byteorder = "^1"
 bytes = "^1"
 failure = "^0.1"
 tracing = "^0.1"
-uuid = { version = "^1.2", features = ["v4"] }
+uuid = { version = "^1.4", features = ["v4"] }
 url = "^2"
 
 xflv = {path = "../../library/container/flv/"}
